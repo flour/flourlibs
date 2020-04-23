@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\shared\Flour.Logging\Flour.Logging.csproj" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0"/>
   </ItemGroup>
 </Project>

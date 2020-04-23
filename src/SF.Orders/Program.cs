@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Flour.Logging;
+using Serilog;
 
 namespace SF.API
 {
@@ -10,6 +10,12 @@ namespace SF.API
     {
         public static int Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
             var host = CreateHostBuilder(args).Build();
 
             try
@@ -17,21 +23,23 @@ namespace SF.API
                 host.Run();
                 return 1;
             }
-            catch
+            catch (System.Exception ex)
             {
+                Log.Fatal(ex, "API host terminated dramatically");
                 return -1;
             }
             finally
             {
+                Log.CloseAndFlush();
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)                
+            Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseLogger()
                         .ConfigureServices(services =>
                         {
                             services.AddControllers();
