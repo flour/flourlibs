@@ -1,7 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Flour.CQRS</Description>
+    <Authors>Vladislav Dikhnich</Authors>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>Latest</LangVersion>
+    <AssemblyName>Flour.CQRS</AssemblyName>
+    <Title>Flour.CQRS</Title>
+    <PackageId>Flour.CQRS</PackageId>
+    <PackageTags>Flour.CQRS</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

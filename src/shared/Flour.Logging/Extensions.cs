@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Flour.Commons;
+using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using System;
 
@@ -24,21 +24,13 @@ namespace Flour.Logging
                 loggerOptions.ConfigureAll(configuration);
             });
 
-        public static TModel GetOptions<TModel>(this IConfiguration configuration, string sectionName)
-            where TModel : new()
-        {
-            var model = new TModel();
-            configuration.GetSection(sectionName).Bind(model);
-            return model;
-        }
-
         private static void ConfigureAll(this LoggerOptions loggerOptions, LoggerConfiguration configuration)
         {
-            if (configuration == null)
-                throw new ArgumentNullException("Logger configuration coonot by null", nameof(configuration));
+            var options = loggerOptions ?? throw new ArgumentNullException("Logger options cannot by null", nameof(loggerOptions));
+            var config = configuration ?? throw new ArgumentNullException("Logger configuration cannot by null", nameof(configuration));
 
-            loggerOptions.Console?.Configure(configuration);
-            loggerOptions.File?.Configure(configuration);
+            options.Console?.Configure(config);
+            options.File?.Configure(config);
         }
     }
 }

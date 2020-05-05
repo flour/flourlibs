@@ -1,21 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6ACD041F-4E18-44F6-B568-1A816D47C007}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{A0807BAF-8A67-4617-B1D7-0E6C5C659665}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.BrokersContracts", "src\shared\Flour.BrokersContracts\Flour.BrokersContracts.csproj", "{5CCA3B8E-94CC-456C-A2E4-7C3C674C42A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.BrokersContracts", "src\shared\Flour.BrokersContracts\Flour.BrokersContracts.csproj", "{5CCA3B8E-94CC-456C-A2E4-7C3C674C42A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.CQRS", "src\shared\Flour.CQRS\Flour.CQRS.csproj", "{1940E3EB-C97F-4C4E-ADBD-37D5836B45DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.CQRS", "src\shared\Flour.CQRS\Flour.CQRS.csproj", "{1940E3EB-C97F-4C4E-ADBD-37D5836B45DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Logging", "src\shared\Flour.Logging\Flour.Logging.csproj", "{1E4F5A38-6484-4C53-866A-090B1E395F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.Logging", "src\shared\Flour.Logging\Flour.Logging.csproj", "{1E4F5A38-6484-4C53-866A-090B1E395F87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Swagger", "src\shared\Flour.Swagger\Flour.Swagger.csproj", "{37761F7A-D44D-42FA-88B3-B30DC3613F22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.Swagger", "src\shared\Flour.Swagger\Flour.Swagger.csproj", "{37761F7A-D44D-42FA-88B3-B30DC3613F22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SF.API", "src\SF.API\SF.API.csproj", "{DAC9F694-E7B2-461B-8321-8EA31CA26A6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SF.API", "src\SF.API\SF.API.csproj", "{DAC9F694-E7B2-461B-8321-8EA31CA26A6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.RabbitMQ", "src\shared\Flour.RabbitMQ\Flour.RabbitMQ.csproj", "{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Commons", "src\shared\Flour.Commons\Flour.Commons.csproj", "{AF4345D7-2140-46BC-B490-5D073D4D2091}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,9 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5CCA3B8E-94CC-456C-A2E4-7C3C674C42A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -90,6 +91,33 @@ Global
 		{DAC9F694-E7B2-461B-8321-8EA31CA26A6B}.Release|x64.Build.0 = Release|Any CPU
 		{DAC9F694-E7B2-461B-8321-8EA31CA26A6B}.Release|x86.ActiveCfg = Release|Any CPU
 		{DAC9F694-E7B2-461B-8321-8EA31CA26A6B}.Release|x86.Build.0 = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|x64.Build.0 = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Debug|x86.Build.0 = Debug|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|x64.ActiveCfg = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|x64.Build.0 = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|x86.ActiveCfg = Release|Any CPU
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C}.Release|x86.Build.0 = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|x64.Build.0 = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Debug|x86.Build.0 = Debug|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|x64.ActiveCfg = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|x64.Build.0 = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF4345D7-2140-46BC-B490-5D073D4D2091}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A0807BAF-8A67-4617-B1D7-0E6C5C659665} = {6ACD041F-4E18-44F6-B568-1A816D47C007}
@@ -98,5 +126,10 @@ Global
 		{1E4F5A38-6484-4C53-866A-090B1E395F87} = {A0807BAF-8A67-4617-B1D7-0E6C5C659665}
 		{37761F7A-D44D-42FA-88B3-B30DC3613F22} = {A0807BAF-8A67-4617-B1D7-0E6C5C659665}
 		{DAC9F694-E7B2-461B-8321-8EA31CA26A6B} = {6ACD041F-4E18-44F6-B568-1A816D47C007}
+		{198EFC00-A763-4A6C-A4C6-BB0E2F00C03C} = {A0807BAF-8A67-4617-B1D7-0E6C5C659665}
+		{AF4345D7-2140-46BC-B490-5D073D4D2091} = {A0807BAF-8A67-4617-B1D7-0E6C5C659665}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E62E62B-D512-4595-88CC-DCD54B23A1E8}
 	EndGlobalSection
 EndGlobal
