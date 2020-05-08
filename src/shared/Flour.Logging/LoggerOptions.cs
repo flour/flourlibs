@@ -8,5 +8,6 @@ namespace Flour.Logging
         public LogLevel Level { get; set; }
         public ConsoleOptions Console { get; set; }
         public FileOptions File { get; set; }
+        public GraylogOptions Graylog { get; set; }
     }
 }

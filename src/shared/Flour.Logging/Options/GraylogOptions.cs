@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 using Serilog.Sinks.Graylog;
 using System;
 
@@ -9,6 +10,7 @@ namespace Flour.Logging.Options
         public bool Enabled { get; set; }
         public string Host { get; set; }
         public int Port { get; set; }
+        public LogEventLevel MinimumLogEventLevel { get; set; } = LogEventLevel.Information;
 
         // TODO more options
 
@@ -26,7 +28,8 @@ namespace Flour.Logging.Options
             configuration.WriteTo.Graylog(new GraylogSinkOptions
             {
                 HostnameOrAddress = host,
-                Port = Port
+                Port = Port,
+                MinimumLogEventLevel = MinimumLogEventLevel
             });
         }
     }

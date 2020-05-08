@@ -31,6 +31,7 @@ namespace Flour.Logging
 
             options.Console?.Configure(config);
             options.File?.Configure(config);
+            options.Graylog?.Configure(config);
         }
     }
 }
