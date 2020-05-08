@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Flour.Logging;
+using Flour.RabbitMQ;
 
 namespace SF.API
 {
@@ -27,7 +28,7 @@ namespace SF.API
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)                
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
@@ -35,9 +36,11 @@ namespace SF.API
                         .ConfigureServices(services =>
                         {
                             services.AddControllers();
+                            // services.AddRabbitMQ();
                         })
                         .Configure(app =>
                         {
+                            // app.UseRabbitMQ();
                             app.UseRouting();
                             app.UseEndpoints(endpoints => endpoints.MapControllers());
                         });

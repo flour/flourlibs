@@ -3,6 +3,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\shared\Flour.CQRS.Brokers\Flour.CQRS.Brokers.csproj" />
     <ProjectReference Include="..\shared\Flour.Logging\Flour.Logging.csproj" />
+    <ProjectReference Include="..\shared\Flour.RabbitMQ\Flour.RabbitMQ.csproj" />
   </ItemGroup>
 </Project>

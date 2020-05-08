@@ -31,11 +31,8 @@ namespace Flour.RabbitMQ
             return services;
         }
 
-        public static IApplicationBuilder UseRabbitMQ(this IApplicationBuilder app, Action<IApplicationBuilder> configure)
-        {
-            configure?.Invoke(app);
-            return app;
-        }
+        public static ISubscriber UseRabbitMQ(this IApplicationBuilder app, Action<IApplicationBuilder> configure = null)
+           => new RabbitMQSubscriber(app.ApplicationServices);
 
         private static IConnection GetConnection(RabbitMqOptions options)
             => new ConnectionFactory

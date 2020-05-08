@@ -1,4 +1,5 @@
 ﻿using Flour.BrokersContracts;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -18,24 +19,17 @@ namespace Flour.RabbitMQ.Implementations
         private readonly RabbitMqOptions _options;
         private readonly ILogger<RabbitMQSubscriber> _logger;
 
-        public RabbitMQSubscriber(
-            IServiceProvider serviceProvider,
-            IConnection connection,
-            IPublisher publisher,
-            IBrokerSerializer brokerSerializer,
-            IConventionProvider conventionProvider,
-            RabbitMqOptions options,
-            ILogger<RabbitMQSubscriber> logger)
+        public RabbitMQSubscriber(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _channel = connection.CreateModel();
-            _publisher = publisher;
-            _serializer = brokerSerializer;
-            _conventionProvider = conventionProvider;
-            _options = options;
-            _logger = logger;
+            _channel = serviceProvider.GetRequiredService<IConnection>().CreateModel();
+            _publisher = serviceProvider.GetRequiredService<IPublisher>();
+            _serializer = serviceProvider.GetRequiredService<IBrokerSerializer>();
+            _conventionProvider = serviceProvider.GetRequiredService<IConventionProvider>();
+            _options = serviceProvider.GetRequiredService<RabbitMqOptions>();
+            _logger = serviceProvider.GetRequiredService<ILogger<RabbitMQSubscriber>>();
 
-            _isLoggerEnabled = options.Logger.Enabled;
+            _isLoggerEnabled = _options.Logger.Enabled;
         }
 
         public ISubscriber Subscribe<T>(Func<IServiceProvider, T, object, Task> handler) where T : class
