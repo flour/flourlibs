@@ -23,9 +23,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.Commons", "src\shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.CQRS.Brokers", "src\shared\Flour.CQRS.Brokers\Flour.CQRS.Brokers.csproj", "{C963FF2D-3596-4252-A9DE-C6FFB72AD20C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.WebKitPDF", "src\shared\Flour.WebKitPDF\Flour.WebKitPDF.csproj", "{A19F4907-EDE3-4019-9249-11A04145958C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.WebKitPDF", "src\shared\Flour.WebKitPDF\Flour.WebKitPDF.csproj", "{A19F4907-EDE3-4019-9249-11A04145958C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SF.Orders", "src\SF.Orders\SF.Orders.csproj", "{E42218DD-8EE7-46B0-B59F-B3242F7829D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C194D700-38B4-403B-82FC-EB41DEC292A3}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
