@@ -27,5 +27,7 @@ jobs:
     - name: Publish      
       if: ${{ success() && github.base_ref == 'refs/heads/master' }}
       run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
+    - name: Echo
+      run: echo 'Done'
       
       
