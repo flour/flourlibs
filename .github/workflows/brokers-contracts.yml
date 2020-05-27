@@ -5,6 +5,7 @@ on:
     branches: [ master, develop ]
     paths:
       - 'src/shared/Flour.BrokersContracts/**'
+      - '.github/workflows/brokers-contracts.yml'
 
 jobs:
   allInOne:
