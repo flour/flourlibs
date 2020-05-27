@@ -1,0 +1,31 @@
+name: BrokersContracts
+
+on:
+  push:
+    branches: [ master, develop ]
+    paths:
+      - 'src/shared/Flour.BrokersContracts/**'
+
+jobs:
+  allInOne:
+    env: 
+      PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore $PROJ_FILE
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal $PROJ_FILE
+    - name: Publish      
+      if: ${{ success() && github.base_ref == 'refs/heads/master' }}
+      run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
+      
+      
