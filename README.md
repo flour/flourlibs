@@ -16,8 +16,8 @@ Set of common loggers that can be used while creating new service based on Seril
 
 Simplified implementation of CQRS approach
 
-### Flour.BrokersContracts
-![BrokersContracts](https://github.com/flour/flourlibs/workflows/BrokersContracts/badge.svg)
+### Flour.BrokersContracts ![BrokersContracts](https://github.com/flour/flourlibs/workflows/BrokersContracts/badge.svg)
+
 Common contracts to work with message brokers, e.g. RabbitMQ
 
 ## Notes
