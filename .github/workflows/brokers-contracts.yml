@@ -32,7 +32,10 @@ jobs:
       if: ${{ success() && github.base_ref == 'refs/heads/master' }}
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
     - name: Echo
-      run: echo "Done!"
-    
+      uses: appleboy/discord-action@master
+      with:
+        webhook_id: ${{ secrets.WEBHOOK_ID }}
+        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+        args: Build done
         
       
