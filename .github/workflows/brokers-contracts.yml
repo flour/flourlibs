@@ -9,7 +9,7 @@ on:
       - '.github/workflows/brokers-contracts.yml'
 env:
   PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
-  TEST_PROJ_FILE: src/test/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
+  TEST_PROJ_FILE: src/tests/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
 
 jobs:  
   allInOne:
