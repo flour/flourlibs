@@ -49,7 +49,7 @@ jobs:
       uses: dotnet/nbgv@master
       id: nbgv
       with:
-        path: $PROJ_FOLDER
+        path: ${{ PROJ_FOLDER }}
     - run: echo 'SemVer2 is ${{ steps.nbgv.outputs.SemVer2 }}'
     - name: Pack      
       if: ${{ success() && github.base_ref == 'refs/heads/master' }}
