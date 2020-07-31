@@ -4,11 +4,12 @@
     "versionHeightOffset": 1,
     "publicReleaseRefSpec": [
         "^refs/heads/master$",
+        "^refs/heads/develop$",
         "^refs/tags/v\\d+\\.\\d+.\\d+"
     ],
     "release": {
         "branchName": "v{version}",
-        "versionIncrement": "minor",
+        "versionIncrement": "build",
         "firstUnstableTag": "alpha"
     }
 }
