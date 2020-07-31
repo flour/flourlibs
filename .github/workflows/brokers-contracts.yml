@@ -27,18 +27,18 @@ jobs:
       run: dotnet build --configuration Release --no-restore $PROJ_FILE
     - name: Test
       run: dotnet test --no-restore --verbosity normal $TEST_PROJ_FILE
-    - name: Tests successed
+    - name: Tests successed    
+      if: success()
       id: tests
       uses: rjstone/discord-webhook-notify@v1
       with:
-        if: success()
         severity: info
         details: Tests succeeded. ${{ steps.tests.output }}
         webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}   
     - name: Tests failed
+      if: failure()
       uses: rjstone/discord-webhook-notify@v1
-      with:
-        if: failure()
+      with:        
         severity: error
         details: Tests failed. ${{ steps.tests.output }}
         webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}       
