@@ -20,7 +20,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 3.1.302
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -34,7 +34,7 @@ jobs:
       uses: rjstone/discord-webhook-notify@v1
       with:
         severity: info
-        details: Tests succeeded. ${{ steps.tests.output }}
+        details: Tests succeeded. ${{ join(steps.tests.outputs.*, '\n') }}
         webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}   
     - name: Tests failed
       if: failure()
