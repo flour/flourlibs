@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Flour.Commons
 {
@@ -11,5 +12,12 @@ namespace Flour.Commons
             configuration.GetSection(sectionName).Bind(model);
             return model;
         }
+
+        public static TModel GetOptions<TModel>(this IServiceCollection services, string sectionName)
+            where TModel : new()
+            => services
+                .BuildServiceProvider()
+                .GetRequiredService<IConfiguration>()
+                .GetOptions<TModel>(sectionName);
     }
 }

@@ -10,11 +10,9 @@ namespace Flour.Logging.Options
         public bool Enabled { get; set; }
         public string Host { get; set; }
         public int Port { get; set; }
-        public LogEventLevel MinimumLogEventLevel { get; set; } = LogEventLevel.Information;
+        public LogEventLevel MinLevel { get; set; } = LogEventLevel.Information;
 
         // TODO more options
-
-        public int MyProperty { get; set; }
 
         public void Configure(LoggerConfiguration configuration)
         {
@@ -29,7 +27,7 @@ namespace Flour.Logging.Options
             {
                 HostnameOrAddress = host,
                 Port = Port,
-                MinimumLogEventLevel = MinimumLogEventLevel
+                MinimumLogEventLevel = MinLevel
             });
         }
     }

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Flour.Tracing.Jaeger</Description>
+    <Authors>Vladislav Dikhnich</Authors>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>Latest</LangVersion>
+    <AssemblyName>Flour.Tracing.Jaeger</AssemblyName>
+    <Title>Flour.Tracing.Jaeger</Title>
+    <PackageId>Flour.Tracing.Jaeger</PackageId>
+    <PackageTags>Flour.Tracing.Jaeger</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Jaeger" Version="0.3.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Flour.Commons\Flour.Commons.csproj" />
+  </ItemGroup>
+
+</Project>

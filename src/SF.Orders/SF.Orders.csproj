@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\shared\Flour.Logging\Flour.Logging.csproj" />
+    <ProjectReference Include="..\shared\Flour.Tracing.Jaeger\Flour.Tracing.Jaeger.csproj" />
   </ItemGroup>
 </Project>

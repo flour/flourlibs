@@ -9,5 +9,6 @@ namespace Flour.Logging
         public ConsoleOptions Console { get; set; }
         public FileOptions File { get; set; }
         public GraylogOptions Graylog { get; set; }
+        public SeqOptions Seq { get; set; }
     }
 }

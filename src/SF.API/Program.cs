@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Flour.Logging;
 using Flour.RabbitMQ;
+using Flour.Tracing.Jaeger;
 
 namespace SF.API
 {
@@ -32,11 +33,13 @@ namespace SF.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseLogger()
+                        .UseUrls("http://localhost:6100")
+                        .UseLogging()
                         .ConfigureServices(services =>
                         {
-                            services.AddControllers();
-                            // services.AddRabbitMQ();
+                            services
+                                .AddJaeger()
+                                .AddControllers();
                         })
                         .Configure(app =>
                         {

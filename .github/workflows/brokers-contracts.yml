@@ -5,9 +5,11 @@ on:
     branches: [ master, develop ]
     paths:
       - 'src/shared/Flour.BrokersContracts/**'
+      - 'src/tests/Flour.BrokersContracts.Tests/**'
       - '.github/workflows/brokers-contracts.yml'
 env:
   PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
+  TEST_PROJ_FILE: src/test/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
 
 jobs:  
   allInOne:
@@ -24,7 +26,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore $PROJ_FILE
     - name: Test
-      run: dotnet test --no-restore --verbosity normal $PROJ_FILE
+      run: dotnet test --no-restore --verbosity normal $TEST_PROJ_FILE
     - name: Tests successed
       id: tests
       uses: rjstone/discord-webhook-notify@v1

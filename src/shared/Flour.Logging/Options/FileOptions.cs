@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 using System;
 
 namespace Flour.Logging.Options
@@ -10,6 +11,7 @@ namespace Flour.Logging.Options
         public long LogSize { get; set; } = 1073741824;
         public string LogPath { get; set; } = "logs/log.txt";
         public string FileRollingInterval { get; set; }
+        public LogEventLevel MinLevel { get; set; } = LogEventLevel.Information;
 
         public void Configure(LoggerConfiguration configuration)
         {
@@ -23,7 +25,8 @@ namespace Flour.Logging.Options
                 LogPath,
                 fileSizeLimitBytes: LogSize,
                 rollOnFileSizeLimit: RollOnFileSizeLimit,
-                rollingInterval: interval
+                rollingInterval: interval,
+                restrictedToMinimumLevel: MinLevel
             );
         }
     }

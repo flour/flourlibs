@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SF.API.Controllers
 {
@@ -14,8 +16,13 @@ namespace SF.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult TestGet()
+        public async Task<IActionResult> TestGet()
         {
+            using var client = new HttpClient();
+            var response = await client.GetAsync("http://localhost:6101/orders/");
+            if (!response.IsSuccessStatusCode)
+                return BadRequest();
+
             _logger.LogInformation("Yo!");
             return Ok("Yo!");
         }

@@ -7,7 +7,7 @@ namespace Flour.Logging
 {
     public static class Extensions
     {
-        public static IWebHostBuilder UseLogger(
+        public static IWebHostBuilder UseLogging(
             this IWebHostBuilder hostBuilder,
             string sectionName = "logger")
             => hostBuilder.UseSerilog((ctx, configuration) =>
@@ -32,6 +32,7 @@ namespace Flour.Logging
             options.Console?.Configure(config);
             options.File?.Configure(config);
             options.Graylog?.Configure(config);
+            options.Seq?.Configure(config);
         }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Flour.Logging;
+using Flour.Tracing.Jaeger;
 
 namespace SF.API
 {
@@ -36,13 +38,16 @@ namespace SF.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
+                        .UseUrls("http://localhost:6101")
+                        .UseLogging()
                         .ConfigureServices(services =>
                         {
-                            services.AddControllers();
+                            services
+                                .AddJaeger()
+                                .AddControllers();
                         })
                         .Configure(app =>
                         {

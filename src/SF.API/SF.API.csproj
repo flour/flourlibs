@@ -6,5 +6,6 @@
     <ProjectReference Include="..\shared\Flour.CQRS.Brokers\Flour.CQRS.Brokers.csproj" />
     <ProjectReference Include="..\shared\Flour.Logging\Flour.Logging.csproj" />
     <ProjectReference Include="..\shared\Flour.RabbitMQ\Flour.RabbitMQ.csproj" />
+    <ProjectReference Include="..\shared\Flour.Tracing.Jaeger\Flour.Tracing.Jaeger.csproj" />
   </ItemGroup>
 </Project>
