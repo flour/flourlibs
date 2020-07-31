@@ -26,10 +26,11 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore $PROJ_FILE
     - name: Test
+      id: tests
       run: dotnet test --no-restore --verbosity normal $TEST_PROJ_FILE
     - name: Tests successed    
       if: success()
-      id: tests
+      id: tests_success
       uses: rjstone/discord-webhook-notify@v1
       with:
         severity: info
@@ -40,7 +41,8 @@ jobs:
       uses: rjstone/discord-webhook-notify@v1
       with:        
         severity: error
-        details: Tests failed. ${{ steps.tests.output }}
+        details: Tests failed. 
+        text: ${{ join(steps.tests.outputs.*, '\n') }}
         webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}       
     - name: Pack      
       if: ${{ success() && github.base_ref == 'refs/heads/master' }}
