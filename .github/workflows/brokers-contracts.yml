@@ -18,12 +18,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
-        uses: gittools/actions/gitversion/execute@v0.9
-      - run: |
-          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-          echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -51,9 +45,13 @@ jobs:
           details: Tests failed.
           text: ${{ join(steps.tests.outputs.*, '\n') }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - uses: dotnet/nbgv@master
+        if: ${{ success() }}
+        with:
+          stamp: version.json
       - name: Pack
         if: ${{ success() && github.base_ref == 'refs/heads/master' }}
-        run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}-${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}
+        run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
       - name: Publish
         if: ${{ success() && github.base_ref == 'refs/heads/master' }}
         run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
