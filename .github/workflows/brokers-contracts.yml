@@ -45,10 +45,12 @@ jobs:
           details: Tests failed.
           text: ${{ join(steps.tests.outputs.*, '\n') }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - uses: dotnet/nbgv@master
+      - name: Versioning
+        uses: dotnet/nbgv@master
         if: ${{ success() }}
         with:
-          stamp: version.json
+          path: $PROJ_FOLDER
+        run: echo ${{ steps.nbgv.outputs.SemVer2 }}
       - name: Pack
         if: ${{ success() && github.base_ref == 'refs/heads/master' }}
         run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
