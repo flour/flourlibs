@@ -8,7 +8,7 @@ on:
       - "src/tests/Flour.BrokersContracts.Tests/**"
       - ".github/workflows/brokers-contracts.yml"
 env:
-  PROJ_FOLDER: src/shared/Flour.BrokersContracts/
+  PROJ_FOLDER: src/shared/Flour.BrokersContracts
   PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
   TEST_PROJ_FILE: src/tests/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
 
@@ -49,7 +49,7 @@ jobs:
         uses: dotnet/nbgv@master
         if: ${{ success() }}
         with:
-          path: $PROJ_FOLDER
+          path: $PROJ_FOLDER/version.json
       - name: Pack
         if: ${{ success() && github.base_ref == 'refs/heads/master' }}
         run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
