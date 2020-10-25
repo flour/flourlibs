@@ -14,11 +14,9 @@ namespace Flour.CQRS.Dispatchers
 
         public async Task Execute<T>(T command) where T : class, ICommand
         {
-            using (var scope = _serviceFactory.CreateScope())
-            {
-                var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<T>>();
-                await handler.Handle(command);
-            }
+            using var scope = _serviceFactory.CreateScope();
+            var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<T>>();
+            await handler.Handle(command);
         }
     }
 }

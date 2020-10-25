@@ -7,9 +7,9 @@ namespace Flour.BrokersContracts.Tests
         [Fact]
         public void AbleToCreateMemberDataAttribute()
         {
-            new MemberDataAttribute(null, string.Empty, string.Empty);
-            new MemberDataAttribute(string.Empty, null, string.Empty);
-            new MemberDataAttribute(string.Empty, string.Empty, null);
+            new MessagingAttribute(null, string.Empty, string.Empty);
+            new MessagingAttribute(string.Empty, null, string.Empty);
+            new MessagingAttribute(string.Empty, string.Empty, null);
         }
     }
 }

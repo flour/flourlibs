@@ -2,61 +2,58 @@ name: BrokersContracts
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [master, develop]
     paths:
-      - 'src/shared/Flour.BrokersContracts/**'
-      - 'src/tests/Flour.BrokersContracts.Tests/**'
-      - '.github/workflows/brokers-contracts.yml'
+      - "src/shared/Flour.BrokersContracts/**"
+      - "src/tests/Flour.BrokersContracts.Tests/**"
+      - ".github/workflows/brokers-contracts.yml"
 env:
   PROJ_FOLDER: src/shared/Flour.BrokersContracts/
   PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
   TEST_PROJ_FILE: src/tests/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
 
-jobs:  
+jobs:
   allInOne:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.302
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore $PROJ_FILE
-    - name: Test
-      id: tests
-      run: dotnet test --no-restore --verbosity normal $TEST_PROJ_FILE
-    - name: Tests successed    
-      if: success()
-      id: tests_success
-      uses: rjstone/discord-webhook-notify@v1
-      with:
-        severity: info
-        details: Tests succeeded. ${{ join(steps.tests.outputs.*, '\n') }}
-        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}   
-    - name: Tests failed
-      if: failure()
-      uses: rjstone/discord-webhook-notify@v1
-      with:        
-        severity: error
-        details: Tests failed. 
-        text: ${{ join(steps.tests.outputs.*, '\n') }}
-        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-    - name: Versioning
-      uses: dotnet/nbgv@master
-      id: nbgv
-      if: ${{ steps.tests.success() }}
-      with:
-        path: $PROJ_FOLDER
-    - run: echo 'SemVer2 is ${{ steps.nbgv.outputs.SemVer2 }}'
-    - name: Pack      
-      if: ${{ success() && github.base_ref == 'refs/heads/master' }}
-      run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
-    - name: Publish
-      if: ${{ success() && github.base_ref == 'refs/heads/master' }}
-      run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-        
-      
+      - uses: actions/checkout@v2
+      - name: Use GitVersion
+        id: gitversion # step id used as reference for output values
+        uses: gittools/actions/gitversion/execute@v0.9
+      - run: |
+          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+          echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.302
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore $PROJ_FILE
+      - name: Test
+        id: tests
+        run: dotnet test --no-restore --verbosity normal $TEST_PROJ_FILE
+      - name: Tests successed
+        if: success()
+        id: tests_success
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          details: Tests succeeded. ${{ join(steps.tests.outputs.*, '\n') }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Tests failed
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          details: Tests failed.
+          text: ${{ join(steps.tests.outputs.*, '\n') }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Pack
+        if: ${{ success() && github.base_ref == 'refs/heads/master' }}
+        run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}-${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}
+      - name: Publish
+        if: ${{ success() && github.base_ref == 'refs/heads/master' }}
+        run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

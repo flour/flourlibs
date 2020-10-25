@@ -19,4 +19,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\Flour.BrokersContracts\Flour.BrokersContracts.csproj" />
+  </ItemGroup>
+
 </Project>

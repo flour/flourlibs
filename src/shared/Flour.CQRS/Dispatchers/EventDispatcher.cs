@@ -17,14 +17,12 @@ namespace Flour.CQRS.Dispatchers
 
         public async Task Send<T>(T anEvent) where T : class, IEvent
         {
-            using (var scope = _scopeFactory.CreateScope())
+            using var scope = _scopeFactory.CreateScope();
+            var handlers = scope.ServiceProvider.GetServices<IEventHandler<T>>();
+            foreach (var handler in handlers)
             {
-                var handlers = scope.ServiceProvider.GetServices<IEventHandler<T>>();
-                foreach (var handler in handlers)
-                {
-                    _logger.LogTrace($"Handling an event of type {typeof(T)} with {handler.GetType()}");
-                    await handler.Handle(anEvent);
-                }
+                _logger.LogTrace($"Handling an event of type {typeof(T)} with {handler.GetType()}");
+                await handler.Handle(anEvent);
             }
         }
     }

@@ -11,14 +11,15 @@ namespace Flour.CQRS
 
         public static IServiceCollection AddCommonEventDispatcher(this IServiceCollection services)
             => services.AddSingleton<IEventDispatcher, EventDispatcher>();
+            
         public static IServiceCollection AddCommonQueryDispatcher(this IServiceCollection services)
             => services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
 
         public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
             => ScanIt(services, typeof(ICommandHandler<>));
 
-        public static IServiceCollection AddCpmmandHandlers(this IServiceCollection services)
-             => ScanIt(services, typeof(ICommandHandler<>));
+        public static IServiceCollection AddEventHandlers(this IServiceCollection services)
+            => ScanIt(services, typeof(IEventHandler<>));
 
         public static IServiceCollection AddQueryHandlers(this IServiceCollection services)
              => ScanIt(services, typeof(IQueryHandler<,>));
