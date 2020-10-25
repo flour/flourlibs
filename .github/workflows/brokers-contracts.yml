@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore $PROJ_FILE
       - name: Build
-        run: dotnet build --configuration Release --no-restore $PROJ_FILE
+        run: dotnet build --configuration Release $PROJ_FILE
       - name: Test
         id: tests
         run: dotnet test --verbosity normal $TEST_PROJ_FILE
