@@ -50,6 +50,8 @@ jobs:
         if: ${{ success() }}
         with:
           path: $PROJ_FOLDER/version.json
+      - name: Version test
+        run: echo ${{ steps.nbgv.outputs.SemVer2 }}
       - name: Pack
         if: ${{ success() && github.base_ref == 'refs/heads/master' }}
         run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
