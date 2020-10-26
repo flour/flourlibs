@@ -47,14 +47,11 @@ jobs:
           details: Tests failed.
           text: ${{ join(steps.tests.outputs.*, '\n') }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Pack
-        if: ${{ success()  }}
-        run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
       - name: Publish
         if: ${{ success() }}
         uses: brandedoutcast/publish-nuget@v2
         with:
-          PROJECT_FILE_PATH: $PROJ_FILE
+          PROJECT_FILE_PATH: ${{ PROJ_FILE }}
           VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
           TAG_FORMAT: '*'
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
