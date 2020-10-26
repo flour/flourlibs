@@ -48,6 +48,7 @@ jobs:
           text: ${{ join(steps.tests.outputs.*, '\n') }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Versioning
+        id: nbgv
         uses: dotnet/nbgv@master
         if: ${{ success() }}
         with:
