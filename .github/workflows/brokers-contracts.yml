@@ -51,7 +51,7 @@ jobs:
         if: ${{ success() }}
         uses: brandedoutcast/publish-nuget@v2
         with:
-          PROJECT_FILE_PATH: ${{ PROJ_FILE }}
+          PROJECT_FILE_PATH: ./$PROJ_FILE
           VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
           TAG_FORMAT: '*'
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
