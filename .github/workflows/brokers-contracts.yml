@@ -48,10 +48,10 @@ jobs:
           text: ${{ join(steps.tests.outputs.*, '\n') }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Pack
-        if: ${{ success() && github.base_ref == 'refs/heads/develop' }}
+        if: ${{ success()  }}
         run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release
       - name: Publish
-        if: ${{ success() && github.base_ref == 'refs/heads/develop' }}
+        if: ${{ success() }}
         uses: brandedoutcast/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: $PROJ_FILE
