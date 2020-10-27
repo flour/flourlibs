@@ -19,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -48,7 +50,7 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Pack
         if: ${{ success() }}
-        run: cd $PROJ_DIR | dotnet pack -o nuget-packages -c Release
+        run: cd $PROJ_DIR | dotnet pack -o nuget-packages -v n -c Release
       # - name: Publish
       #   if: ${{ success() }}
       #   run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
