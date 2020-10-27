@@ -4,15 +4,15 @@ Dev
 
 ## Libraries
 
-### Flour.Commons
+### Flour.Commons ![Commons](https://github.com/flour/flourlibs/workflows/Commons/badge.svg)
 
 Contains a set of helpful extensions that simplifies service configuring 
 
-### Flour.Logging
+### Flour.Logging ![Logging](https://github.com/flour/flourlibs/workflows/Logging/badge.svg)
 
 Set of common loggers that can be used while creating new service based on Serilog
 
-### Flour.CQRS
+### Flour.CQRS ![CQRS](https://github.com/flour/flourlibs/workflows/CQRS/badge.svg)
 
 Simplified implementation of CQRS approach
 
