@@ -9,6 +9,13 @@
     <Title>Flour.BrokersContracts</Title>
     <PackageId>Flour.BrokersContracts</PackageId>
     <PackageTags>Flour.BrokersContracts</PackageTags>
+    <VersionDependsOn>$(VersionDependsOn);GetNuPkgVersion</VersionDependsOn>
   </PropertyGroup>
+
+  <Target Name="GetNuPkgVersion">
+    <PropertyGroup>
+      <Version>$(NuGetPackageVersion)</Version>
+    </PropertyGroup>
+  </Target>
 
 </Project>

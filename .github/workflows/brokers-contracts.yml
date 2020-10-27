@@ -57,6 +57,6 @@ jobs:
       - name: Pack
         if: ${{ success() }}
         run: cd $PROJ_DIR | dotnet pack -o nuget-packages -c Release /p:Version=${{ steps.nbgv.outputs.SemVer2 }}
-      - name: Publish
-        if: ${{ success() }}
-        run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      # - name: Publish
+      #   if: ${{ success() }}
+      #   run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
