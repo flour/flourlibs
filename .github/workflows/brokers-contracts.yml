@@ -8,6 +8,7 @@ on:
       - "src/tests/Flour.BrokersContracts.Tests/**"
       - ".github/workflows/brokers-contracts.yml"
 env:  
+  PROJ_DIR: src/shared/Flour.BrokersContracts/
   PROJ_FILE: src/shared/Flour.BrokersContracts/Flour.BrokersContracts.csproj
   PROJ_VERSION_FILE: src/shared/Flour.BrokersContracts/version.json
   TEST_PROJ_FILE: src/tests/Flour.BrokersContracts.Tests/Flour.BrokersContracts.Tests.csproj
@@ -55,7 +56,7 @@ jobs:
           path: $PROJ_VERSION_FILE
       - name: Pack
         if: ${{ success() }}
-        run: dotnet pack $PROJ_FILE --output nuget-packages --configuration Release -Version $GitBuildVersionSimple
+        run: cd $PROJ_DIR | dotnet pack --output nuget-packages --configuration Release -Version ${{ steps.nbgv.outputs.SemVer2 }} -noWarn:MSB1008
       - name: Publish
         if: ${{ success() }}
         run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
