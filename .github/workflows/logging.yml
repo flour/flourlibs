@@ -35,12 +35,12 @@ jobs:
       - name: 'Dotnet Tool Restore'
         run: dotnet tool restore
       - name: 'Dotnet Cake Build'
-        run: cd ./src/shared/ | dotnet cake --target=Build --project=$PROJECT_NAME
+        run: dotnet cake --target=Build --project=$PROJECT_NAME
       - name: 'Dotnet Cake Test'
-        run: cd ./src/shared/ | dotnet cake --target=Test --project=$PROJECT_NAME
+        run: dotnet cake --target=Test --project=$PROJECT_NAME
       - name: 'Dotnet Cake Pack'
         if: success()
-        run: cd ./src/shared/ | dotnet cake --target=Pack --project=$PROJECT_NAME
+        run: dotnet cake --target=Pack --project=$PROJECT_NAME
       - name: 'Publish Artefacts'
         uses: actions/upload-artifact@v1.0.0
         with:

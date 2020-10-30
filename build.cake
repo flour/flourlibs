@@ -6,7 +6,7 @@ var configuration = HasArgument("Configuration")
                         : EnvironmentVariable("Configuration") is object 
                             ? EnvironmentVariable("Configuration") 
                             : "Release";
-var projectDir = project == "All" ? "../../" : $"./{project}";
+var projectDir = project == "All" ? "./src/shared/" : $"./src/shared/{project}";
 
 
 Task("Clean")
@@ -40,7 +40,7 @@ Task("Build")
 
 Task("Test")
     .Description("Runs unit tests and outputs test results to the artefacts directory.")
-    .DoesForEach(GetFiles("../tests/" + (project == "All" ? "" : $"{project}.Tests/") + "**/*.csproj"), prj =>
+    .DoesForEach(GetFiles("./src/shared/tests/" + (project == "All" ? "" : $"{project}.Tests/") + "**/*.csproj"), prj =>
     {
         DotNetCoreTest(
             prj.ToString(),
