@@ -1,6 +1,7 @@
 ﻿using Flour.Commons;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
+using Serilog.Exceptions;
 using System;
 
 namespace Flour.Logging
@@ -28,6 +29,8 @@ namespace Flour.Logging
         {
             var options = loggerOptions ?? throw new ArgumentNullException("Logger options cannot by null", nameof(loggerOptions));
             var config = configuration ?? throw new ArgumentNullException("Logger configuration cannot by null", nameof(configuration));
+
+            config.Enrich.WithExceptionDetails();
 
             options.Console?.Configure(config);
             options.File?.Configure(config);

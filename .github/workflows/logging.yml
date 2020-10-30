@@ -8,49 +8,53 @@ on:
       - "src/tests/Flour.Logging.Tests/**"
       - ".github/workflows/logging.yml"
 env:  
-  PROJ_DIR: src/shared/Flour.Logging/
-  PROJ_FILE: src/shared/Flour.Logging/Flour.Logging.csproj
-  PROJ_VERSION_FILE: src/shared/Flour.Logging/version.json
-  TEST_PROJ_FILE: src/tests/Flour.Logging.Tests/Flour.Logging.Tests.csproj
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  PROJECT_NAME: Flour.Logging
 
 jobs:
-  allInOne:
-    runs-on: ubuntu-latest
-
+  build:
+    name: Build-${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    
     steps:
-      - uses: actions/checkout@v2
+      - name: 'Checkout'
+        uses: actions/checkout@v2
         with:
+          lfs: true
           fetch-depth: 0
+      - name: 'Git Fetch Tags'
+        run: git fetch --tags 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
+      - name: 'Go to libs folder'
+        run: cd ./src/shared
+      - name: 'Dotnet Tool Restore'
+        run: dotnet tool restore
+      - name: 'Dotnet Cake Build'
+        run: dotnet cake --target=Build --project=$PROJECT_NAME
+      - name: 'Dotnet Cake Test'
+        run: dotnet cake --target=Test --project=$PROJECT_NAME
+      - name: 'Dotnet Cake Pack'
+        run: dotnet cake --target=Pack --project=$PROJECT_NAME
+      - name: 'Publish Artefacts'
+        uses: actions/upload-artifact@v1.0.0
         with:
-          dotnet-version: 3.1.302
-      - name: Install dependencies
-        run: dotnet restore $PROJ_FILE
-      - name: Build
-        run: dotnet build --configuration Release $PROJ_FILE
-      - name: Test
-        id: tests
-        run: dotnet test --verbosity normal $TEST_PROJ_FILE
-      - name: Tests successed
-        if: success()
-        id: tests_success
-        uses: rjstone/discord-webhook-notify@v1
+          name: ${{matrix.os}}
+          path: './nugets'
+
+  push-nuget:
+    name: 'Push NuGet Packages'
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Download Artefact'
+        uses: actions/download-artifact@v1
         with:
-          severity: info
-          details: Tests succeeded. ${{ join(steps.tests.outputs.*, '\n') }}
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Tests failed
-        if: failure()
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-          severity: error
-          details: Tests failed.
-          text: ${{ join(steps.tests.outputs.*, '\n') }}
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Pack
-        if: ${{ success() }}
-        run: cd $PROJ_DIR | dotnet pack -o nuget-packages -v n -c Release
-      - name: Publish
-        if: ${{ success() }}
-        run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          name: 'ubuntu-latest'
+      - name: 'Dotnet NuGet Push'
+        run: dotnet nuget push nugets/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

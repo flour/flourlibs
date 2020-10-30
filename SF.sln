@@ -30,6 +30,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C194D700-38B4-403B-82FC-EB41DEC292A3}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\brokers-contracts.yml = .github\workflows\brokers-contracts.yml
+		src\shared\dotnet-tools.json = src\shared\dotnet-tools.json
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -41,13 +42,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.BrokersContracts.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.BlobStorage.Contracts", "src\shared\Flour.BlobStorage.Contracts\Flour.BlobStorage.Contracts.csproj", "{A6E5CAE1-D605-4437-8FC5-406C0416598E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SF.ClientWeb", "src\SF.ClientWeb\SF.ClientWeb.csproj", "{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.CQRS.Tests", "src\tests\Flour.CQRS.Tests\Flour.CQRS.Tests.csproj", "{6C4131A7-98AE-41C2-82E0-630820896C05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.CQRS.Tests", "src\tests\Flour.CQRS.Tests\Flour.CQRS.Tests.csproj", "{6C4131A7-98AE-41C2-82E0-630820896C05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.Logging.Tests", "src\tests\Flour.Logging.Tests\Flour.Logging.Tests.csproj", "{990CDB3F-DDAB-4473-B129-1A30A51E5694}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Logging.Tests", "src\tests\Flour.Logging.Tests\Flour.Logging.Tests.csproj", "{990CDB3F-DDAB-4473-B129-1A30A51E5694}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Commons.Tests", "src\tests\Flour.Commons.Tests\Flour.Commons.Tests.csproj", "{56612CFF-4213-49B7-9682-35D9B7AF2EC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flour.Commons.Tests", "src\tests\Flour.Commons.Tests\Flour.Commons.Tests.csproj", "{56612CFF-4213-49B7-9682-35D9B7AF2EC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Tracing.Jaeger.Tests", "Flour.Tracing.Jaeger.Tests\Flour.Tracing.Jaeger.Tests.csproj", "{1080C319-4B9D-4E23-ADB9-73864FD81670}"
 EndProject
@@ -217,18 +216,6 @@ Global
 		{A6E5CAE1-D605-4437-8FC5-406C0416598E}.Release|x64.Build.0 = Release|Any CPU
 		{A6E5CAE1-D605-4437-8FC5-406C0416598E}.Release|x86.ActiveCfg = Release|Any CPU
 		{A6E5CAE1-D605-4437-8FC5-406C0416598E}.Release|x86.Build.0 = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|x64.Build.0 = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Debug|x86.Build.0 = Debug|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|x64.ActiveCfg = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|x64.Build.0 = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|x86.ActiveCfg = Release|Any CPU
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF}.Release|x86.Build.0 = Release|Any CPU
 		{6C4131A7-98AE-41C2-82E0-630820896C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C4131A7-98AE-41C2-82E0-630820896C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C4131A7-98AE-41C2-82E0-630820896C05}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -297,7 +284,6 @@ Global
 		{7FEA9686-8E0F-4F9F-A56F-4A403D77A419} = {6ACD041F-4E18-44F6-B568-1A816D47C007}
 		{8BD12788-D924-4929-87C2-4F25FF76D5E3} = {7FEA9686-8E0F-4F9F-A56F-4A403D77A419}
 		{A6E5CAE1-D605-4437-8FC5-406C0416598E} = {A0807BAF-8A67-4617-B1D7-0E6C5C659665}
-		{9D4C0CB6-0F9B-421E-8AEF-B508111A28AF} = {6ACD041F-4E18-44F6-B568-1A816D47C007}
 		{6C4131A7-98AE-41C2-82E0-630820896C05} = {7FEA9686-8E0F-4F9F-A56F-4A403D77A419}
 		{990CDB3F-DDAB-4473-B129-1A30A51E5694} = {7FEA9686-8E0F-4F9F-A56F-4A403D77A419}
 		{56612CFF-4213-49B7-9682-35D9B7AF2EC4} = {7FEA9686-8E0F-4F9F-A56F-4A403D77A419}

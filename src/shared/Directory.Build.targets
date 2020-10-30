@@ -1,0 +1,15 @@
+﻿<Project>
+
+  <Target Name="Versioning" BeforeTargets="MinVer">
+    <PropertyGroup>
+      <MinVerSkip Condition="'$(Configuration)' == 'Debug'">true</MinVerSkip>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Build">
+      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-preview.$(MinVerPreRelease)</PackageVersion>
+      <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
+      <MinVerVerbosity>normal</MinVerVerbosity>
+    </PropertyGroup>
+  </Target>
+
+</Project>
