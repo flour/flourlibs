@@ -1,5 +1,5 @@
 ﻿var target = Argument("Target", "Default");
-var artefactsDirectory = Directory("../nugets");
+var artefactsDirectory = Directory("./nugets");
 var project = HasArgument("Project") ? Argument<string>("Project") : "All";
 var configuration = HasArgument("Configuration") 
                         ? Argument<string>("Configuration") 
@@ -79,7 +79,7 @@ Task("Pack")
 Task("Default")
     .Description("Cleans, restores NuGet packages, builds the solution, runs unit tests and then creates NuGet packages.")
     .IsDependentOn("Build")
-    // .IsDependentOn("Test")
+    .IsDependentOn("Test")
     .IsDependentOn("Pack");
 
 RunTarget(target);

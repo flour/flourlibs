@@ -6,8 +6,7 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Build">
-      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-preview.$(MinVerPreRelease)</PackageVersion>
-      <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
+      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PackageVersion>
       <MinVerVerbosity>normal</MinVerVerbosity>
     </PropertyGroup>
   </Target>
