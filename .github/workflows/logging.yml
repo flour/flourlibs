@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v1.0.0
         with:
           name: ${{matrix.os}}
-          path: '../nugets'
+          path: './nugets'
 
   push-nuget:
     name: 'Push NuGet Packages'
