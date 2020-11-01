@@ -58,5 +58,7 @@ jobs:
         with:
           name: 'ubuntu-latest'
           path: './nugets'
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: 'Dotnet NuGet Push'
         run: dotnet nuget push ./nugets/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
