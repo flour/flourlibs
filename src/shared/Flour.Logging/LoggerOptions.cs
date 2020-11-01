@@ -2,6 +2,7 @@
 
 namespace Flour.Logging
 {
+    // TODO: spliti by assembly
     public class LoggerOptions
     {
         public ConsoleOptions Console { get; set; }
