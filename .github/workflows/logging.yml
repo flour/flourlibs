@@ -42,7 +42,7 @@ jobs:
         if: success()
         run: dotnet cake --target=Pack --project=$PROJECT_NAME
       - name: 'Publish Artefacts'
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: ${{matrix.os}}
           path: './nugets'
@@ -57,5 +57,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: 'ubuntu-latest'
+          path: './nugets'
       - name: 'Dotnet NuGet Push'
         run: dotnet nuget push ./nugets/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
