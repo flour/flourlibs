@@ -42,7 +42,7 @@ namespace SF.API
                 {
                     webBuilder
                         .UseUrls("http://localhost:6101")
-                        .UseLogging()
+                        .UseWebHostLogging()
                         .ConfigureServices(services =>
                         {
                             services
