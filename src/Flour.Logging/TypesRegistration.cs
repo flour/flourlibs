@@ -8,7 +8,7 @@ using Serilog.Exceptions;
 
 namespace Flour.Logging
 {
-    public static class Extensions
+    public static class TypesRegistration
     {
         private const string DefaultSectionName = "logger";
 

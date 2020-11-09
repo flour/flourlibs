@@ -1,16 +1,12 @@
-name: Logging
+name: AllInOne
 
 on:
   push:
     branches: [master, develop]
-    paths:
-      - "src/shared/Flour.Logging/**"
-      - "src/tests/Flour.Logging.Tests/**"
-      - ".github/workflows/logging.yml"
+
 env:  
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  PROJECT_NAME: Flour.Logging
 
 jobs:
   build:
@@ -35,12 +31,12 @@ jobs:
       - name: 'Dotnet Tool Restore'
         run: dotnet tool restore
       - name: 'Dotnet Cake Build'
-        run: dotnet cake --target=Build --project=$PROJECT_NAME
+        run: dotnet cake --target=Build
       - name: 'Dotnet Cake Test'
-        run: dotnet cake --target=Test --project=$PROJECT_NAME
+        run: dotnet cake --target=Test
       - name: 'Dotnet Cake Pack'
         if: success()
-        run: dotnet cake --target=Pack --project=$PROJECT_NAME
+        run: dotnet cake --target=Pack
       - name: 'Publish Artefacts'
         uses: actions/upload-artifact@v2
         with:

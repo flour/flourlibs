@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\Flour.BrokersContracts\Flour.BrokersContracts.csproj" />
+    <ProjectReference Include="..\..\src\Flour.BrokersContracts\Flour.BrokersContracts.csproj" />
   </ItemGroup>
 
 </Project>
