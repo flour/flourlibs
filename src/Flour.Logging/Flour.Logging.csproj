@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Flour.Commons" Version="*" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
@@ -20,10 +21,6 @@
     <PackageReference Include="Serilog.Sinks.Graylog" Version="2.2.1" />    
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="8.4.1" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Flour.Commons\Flour.Commons.csproj" />
   </ItemGroup>
 
 </Project>
