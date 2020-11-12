@@ -57,4 +57,4 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
       - name: 'Dotnet NuGet Push'
-        run: ls ./nugets/ | grep --line-buffer nupkg | sed 's/^/\.\/nugets\//' | xargs dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: ls ./nugets/ | grep nupkg | while read line ; do dotnet nuget push ./nugets/$line --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate ; done
