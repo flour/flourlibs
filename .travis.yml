@@ -11,8 +11,8 @@ before_script:
   - dotnet tool restore
 script:
   - dotnet cake
-  - ls ./nugets/ | grep nupkg | while read line ; do dotnet ./nugets/$line --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate ; done
+  - ls ./nugets/ | grep nupkg | while read line ; do dotnet ./nugets/$line --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate ; done
 notifications:
   email:
-    on_success: never
+    on_success: always
     on_failure: always
