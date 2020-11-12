@@ -9,9 +9,13 @@ branches:
     - develop
 before_script:
   - dotnet tool restore
-script:
-  - dotnet cake
-  - ls ./nugets/ | grep nupkg | while read line ; do dotnet nuget push ./nugets/$line --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate ; done
+jobs:
+  include:
+    - stage: build_test_pack
+      script: dotnet cake
+    - stage: publish
+      if: branch = master
+      script: ls ./nugets/ | grep nupkg | while read line ; do dotnet nuget push ./nugets/$line --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate ; done
 notifications:
   email:
     on_success: always
