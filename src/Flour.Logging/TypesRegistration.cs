@@ -53,6 +53,12 @@ namespace Flour.Logging
             options.File?.Configure(config);
             options.ElasticSearch?.Configure(config);
             options.Loki?.Configure(config);
+
+            if (options.Labels is null)
+                return;
+
+            foreach (var (key, value) in options.Labels)
+                configuration.Enrich.WithProperty(key, value);
         }
     }
 }
