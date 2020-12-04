@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
+        os: [Ubuntu-20.04, macOS-latest]
     
     steps:
       - name: 'Checkout'
@@ -47,12 +47,12 @@ jobs:
     name: 'Push NuGet Packages'
     needs: build
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     steps:
       - name: 'Download Artefact'
         uses: actions/download-artifact@v1
         with:
-          name: 'ubuntu-latest'
+          name: 'Ubuntu-20.04'
           path: './nugets'
       - name: Display structure of downloaded files
         run: ls -R
