@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Flour.BrokersContracts
 {
-    public interface ISubscriber
+    public interface ISubscriber : IDisposable
     {
         ISubscriber Subscribe<T>(Func<IServiceProvider, T, object, Task> handle) where T : class;
     }
