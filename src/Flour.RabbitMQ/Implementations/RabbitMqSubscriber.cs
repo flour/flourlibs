@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace Flour.RabbitMQ.Implementations
 {
-    public class RabbitMQSubscriber : ISubscriber
+    public class RabbitMqSubscriber : ISubscriber
     {
         private readonly bool _isLoggerEnabled;
         private readonly IServiceProvider _serviceProvider;
         private readonly IModel _channel;
-        private readonly IPublisher _publisher;
+        private readonly IBrokerPublisher _brokerPublisher;
         private readonly IBrokerSerializer _serializer;
         private readonly IConventionProvider _conventionProvider;
         private readonly RabbitMqOptions _options;
-        private readonly ILogger<RabbitMQSubscriber> _logger;
+        private readonly ILogger<RabbitMqSubscriber> _logger;
 
-        public RabbitMQSubscriber(IServiceProvider serviceProvider)
+        public RabbitMqSubscriber(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _channel = serviceProvider.GetRequiredService<IConnection>().CreateModel();
-            _publisher = serviceProvider.GetRequiredService<IPublisher>();
+            _brokerPublisher = serviceProvider.GetRequiredService<IBrokerPublisher>();
             _serializer = serviceProvider.GetRequiredService<IBrokerSerializer>();
             _conventionProvider = serviceProvider.GetRequiredService<IConventionProvider>();
             _options = serviceProvider.GetRequiredService<RabbitMqOptions>();
-            _logger = serviceProvider.GetRequiredService<ILogger<RabbitMQSubscriber>>();
+            _logger = serviceProvider.GetRequiredService<ILogger<RabbitMqSubscriber>>();
 
             _isLoggerEnabled = _options.Logger.Enabled;
         }
@@ -38,7 +38,7 @@ namespace Flour.RabbitMQ.Implementations
             var exclusive = _options.Queue.Exclusive;
             var autoDelete = _options.Queue.AutoDelete;
             var convention = _conventionProvider.Get<T>();
-            var qosOprions = _options.QOS;
+            var qosOptions = _options.Qos;
 
             if (_options.Queue.Declare)
             {
@@ -48,7 +48,7 @@ namespace Flour.RabbitMQ.Implementations
             }
 
             _channel.QueueBind(convention.Queue, convention.Exchange, convention.Route);
-            _channel.BasicQos(qosOprions.PrefetchSize, qosOprions.PrefetchCount, qosOprions.IsGlobal);
+            _channel.BasicQos(qosOptions.PrefetchSize, qosOptions.PrefetchCount, qosOptions.IsGlobal);
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += async (sender, args) =>
@@ -58,7 +58,8 @@ namespace Flour.RabbitMQ.Implementations
                 var timestamp = args.BasicProperties.Timestamp.UnixTime;
 
                 if (_isLoggerEnabled)
-                    _logger.LogInformation($"Received a message #'{messageId}', correlation ID: #'{correlationId}', at {timestamp} via {convention}.");
+                    _logger.LogInformation(
+                        $"Received a message #'{messageId}', correlation ID: #'{correlationId}', at {timestamp} via {convention}.");
 
                 try
                 {
@@ -77,8 +78,13 @@ namespace Flour.RabbitMQ.Implementations
             return this;
         }
 
-        private async Task HandleAsync<T>(T message, string messageId, string correlationId, object context,
-            BasicDeliverEventArgs args, Func<IServiceProvider, T, object, Task> handler)
+        private async Task HandleAsync<T>(
+            T message, 
+            string messageId, 
+            string correlationId, 
+            object context,
+            BasicDeliverEventArgs args, 
+            Func<IServiceProvider, T, object, Task> handler)
         {
             var messageInfo = $"message #'{messageId}' and correlation ID #'{correlationId}'";
             try
@@ -91,7 +97,7 @@ namespace Flour.RabbitMQ.Implementations
             {
                 _logger.LogError(ex, $"Failed to handle {messageInfo}");
                 // TODO: Generic error types??
-                // await _publisher.Publish($"Error: {messageInfo}", correlationId, context: context);
+                // await _brokerPublisher.Publish($"Error: {messageInfo}", correlationId, context: context);
             }
             finally
             {

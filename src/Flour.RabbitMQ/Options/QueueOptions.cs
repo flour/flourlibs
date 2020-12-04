@@ -2,7 +2,7 @@
 {
     public class QueueOptions
     {
-        internal static readonly string DefaultTemplate = "%assembly%.%exchange%.%message%";
+        internal static readonly string DefaultTemplate = "%assembly%/%exchange%.%message%";
 
         public bool Declare { get; set; } = true;
         public bool Durable { get; set; } = true;

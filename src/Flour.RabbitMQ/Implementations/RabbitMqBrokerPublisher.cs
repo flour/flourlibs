@@ -4,26 +4,26 @@ using System.Threading.Tasks;
 
 namespace Flour.RabbitMQ.Implementations
 {
-    public class RabbitMQPublisher : IPublisher
+    public class RabbitMqBrokerPublisher : IBrokerPublisher
     {
-        private readonly IRabbitMQClient _client;
+        private readonly IRabbitMqClient _client;
         private readonly IConventionProvider _conventionProvider;
 
-        public RabbitMQPublisher(IRabbitMQClient client, IConventionProvider conventionProvider)
+        public RabbitMqBrokerPublisher(IRabbitMqClient client, IConventionProvider conventionProvider)
         {
             _client = client;
             _conventionProvider = conventionProvider;
         }
 
         public Task Publish<T>(
-            T message, 
-            string correlationId = null, 
-            string messageId = null, 
-            object context = null, 
+            T message,
+            string correlationId = null,
+            string messageId = null,
+            string context = null,
             IDictionary<string, object> headers = null
         ) where T : class
         {
-            _client.Send(message, _conventionProvider.Get<T>(), messageId, correlationId, headers);
+            _client.Send(message, _conventionProvider.Get<T>(), messageId, correlationId, context, headers);
             return Task.CompletedTask;
         }
     }
