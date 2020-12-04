@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace Flour.BrokersContracts
 {
-    public interface IPublisher
+    public interface IBrokerPublisher
     {
         Task Publish<T>(
             T message,
             string correlationId = null,
             string messageId = null,
-            object context = null,
+            string context = null,
             IDictionary<string, object> headers = null) where T : class;
     }
 }

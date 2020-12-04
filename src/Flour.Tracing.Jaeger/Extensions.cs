@@ -1,10 +1,12 @@
-﻿using Flour.Commons;
+﻿using System;
 using Jaeger;
 using Jaeger.Reporters;
 using Jaeger.Samplers;
 using Jaeger.Senders.Thrift;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenTracing;
 using OpenTracing.Util;
 
@@ -14,10 +16,19 @@ namespace Flour.Tracing.Jaeger
     {
         private const string DefaultSectionName = "jaeger";
 
-        public static IServiceCollection AddJaeger(this IServiceCollection services, string configSectionName = DefaultSectionName)
-            => services.AddJaeger(services.GetOptions<JaegerOptions>(configSectionName));
+        public static IServiceCollection AddJaeger(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string sectionName = DefaultSectionName)
+        {
+            services.Configure<JaegerOptions>(opts => configuration.GetSection(sectionName)?.Bind(opts));
+            var options = services.BuildServiceProvider().GetRequiredService<IOptions<JaegerOptions>>();
+            return services.AddJaeger(options.Value);
+        }
 
-        public static IServiceCollection AddJaeger(this IServiceCollection services, JaegerOptions options)
+        private static IServiceCollection AddJaeger(
+            this IServiceCollection services,
+            JaegerOptions options)
         {
             if (options == null || !options.Enabled)
                 return services;
@@ -53,8 +64,12 @@ namespace Flour.Tracing.Jaeger
             {
                 SamplerType.Rate => new RateLimitingSampler(options.MaxTracesPerSecond),
                 SamplerType.Probabilistic => new ProbabilisticSampler(options.SamplingRate),
+                SamplerType.Constant => new ConstSampler(true),
                 _ => new ConstSampler(true),
             };
         }
+
+        private static T ToEnum<T>(this string value) where T : struct
+            => Enum.TryParse<T>(value, true, out var result) ? result : default;
     }
 }

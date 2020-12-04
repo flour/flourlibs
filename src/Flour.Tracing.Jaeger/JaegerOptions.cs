@@ -1,17 +1,5 @@
-﻿using System.ComponentModel;
-
-namespace Flour.Tracing.Jaeger
+﻿namespace Flour.Tracing.Jaeger
 {
-    public enum SamplerType
-    { 
-        [Description("constant")]
-        Constant,
-        [Description("rate")]
-        Rate,
-        [Description("prob")]
-        Probabilistic
-    }
-
     public class JaegerOptions
     {
         public bool Enabled { get; set; }

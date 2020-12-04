@@ -6,6 +6,7 @@ namespace Flour.RabbitMQ.Implementations
 {
     public class ConventionsStore : IConventionsStore
     {
+
         private readonly IDictionary<Type, IMessageConvention> _conventions
             = new ConcurrentDictionary<Type, IMessageConvention>();
 
@@ -26,7 +27,10 @@ namespace Flour.RabbitMQ.Implementations
         public IMessageConvention Get(Type type)
             => _conventions.TryGetValue(type, out var convention) ? convention : null;
 
+
         public IEnumerable<IMessageConvention> GetAll()
             => _conventions.Values;
+
+        
     }
 }

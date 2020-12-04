@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Flour.RabbitMQ.Implementations
 {
-    public class ConventionProvider : IConventionProvider
+    internal class ConventionProvider : IConventionProvider
     {
         private readonly string _queueTemplate;
         private readonly IConventionsStore _conventionsStore;
@@ -13,7 +13,7 @@ namespace Flour.RabbitMQ.Implementations
         public ConventionProvider(IConventionsStore conventionsStore, RabbitMqOptions options)
         {
             _conventionsStore = conventionsStore;
-            _queueTemplate = string.IsNullOrWhiteSpace(options.Queue.QueueTemplate) 
+            _queueTemplate = string.IsNullOrWhiteSpace(options.Queue.QueueTemplate)
                 ? QueueOptions.DefaultTemplate
                 : options.Queue.QueueTemplate;
         }
@@ -41,9 +41,9 @@ namespace Flour.RabbitMQ.Implementations
             var message = type.Name;
 
             return attribute?.Queue
-                ?? _queueTemplate.Replace($"%{nameof(assembly)}%", assembly)
-                    .Replace($"%{nameof(exchange)}%", exchange)
-                    .Replace($"%{nameof(message)}%", message);
+                   ?? _queueTemplate.Replace($"%{nameof(assembly)}%", assembly)
+                       .Replace($"%{nameof(exchange)}%", exchange)
+                       .Replace($"%{nameof(message)}%", message);
         }
 
         public string GetRoute(Type type)
@@ -54,5 +54,17 @@ namespace Flour.RabbitMQ.Implementations
 
         private MessagingAttribute GetMessagingAttribute(Type type)
             => type.GetCustomAttribute<MessagingAttribute>();
+
+        private IMessageConvention BuildConvention(Type type)
+        {
+            var convention = new MessageConvention(
+                type,
+                GetRoute(type),
+                GetExchange(type),
+                GetQueue(type));
+
+            _conventionsStore.Add(type, convention);
+            return convention;
+        }
     }
 }

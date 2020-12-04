@@ -5,17 +5,17 @@ namespace Flour.CQRS.Brokers
 {
     internal class ServiceBusMessageDispatcher : ICommandDispatcher, IEventDispatcher
     {
-        private readonly IPublisher _publisher;
+        private readonly IBrokerPublisher _brokerPublisher;
 
-        public ServiceBusMessageDispatcher(IPublisher publisher)
+        public ServiceBusMessageDispatcher(IBrokerPublisher brokerPublisher)
         {
-            _publisher = publisher;
+            _brokerPublisher = brokerPublisher;
         }
 
         public Task Execute<T>(T command) where T : class, ICommand
-            => _publisher.Publish(command);
+            => _brokerPublisher.Publish(command);
 
         public Task Send<T>(T anEvent) where T : class, IEvent
-            => _publisher.Publish(anEvent);
+            => _brokerPublisher.Publish(anEvent);
     }
 }

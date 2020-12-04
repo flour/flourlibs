@@ -5,31 +5,46 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System;
-using System.Linq;
+using Flour.RabbitMQ.Internals;
 
 namespace Flour.RabbitMQ
 {
     public static class Extensions
     {
         private const string DefaultSectionName = "rabbitmq";
-        public static IServiceCollection AddRabbitMQ(this IServiceCollection services, string configSection = DefaultSectionName)
+
+        public static IServiceCollection AddRabbitMq(
+            this IServiceCollection services,
+            string configSection = DefaultSectionName)
         {
             var options = services.GetOptions<RabbitMqOptions>(configSection);
 
-            services.AddSingleton(options);
-            services.AddSingleton(GetConnection(options));
+            if (options.HostNames is null || options.HostNames.Count == 0)
+                throw new ArgumentException("No rabbit hostnames", nameof(options.HostNames));
 
-            services.AddSingleton<IConventionsStore, ConventionsStore>();
-            services.AddSingleton<IConventionProvider, ConventionProvider>();
-            services.AddSingleton<IBrokerSerializer, RabbitMQSerializer>();
-            services.AddSingleton<IRabbitMQClient, RabbitMqClient>();
-            services.AddSingleton<IPublisher, RabbitMQPublisher>();
+            services
+                .AddSingleton(options)
+                .AddSingleton(GetConnection(options))
+                .AddSingleton<IConventionsStore, ConventionsStore>()
+                .AddSingleton<IConventionProvider, ConventionProvider>()
+                .AddSingleton<IBrokerSerializer, RabbitMqSerializer>()
+                .AddSingleton<IRabbitMqClient, RabbitMqClient>()
+                .AddSingleton<IBrokerPublisher, RabbitMqBrokerPublisher>()
+                .AddTransient<ExchangeInitializer>()
+                .AddHostedService<RabbitMqHostedService>();
+
+            using var serviceProvider = services.BuildServiceProvider();
+
+            var initializer = serviceProvider.GetRequiredService<ExchangeInitializer>();
+            initializer.Initialize().GetAwaiter().GetResult();
+
 
             return services;
         }
 
-        public static ISubscriber UseRabbitMQ(this IApplicationBuilder app, Action<IApplicationBuilder> configure = null)
-           => new RabbitMQSubscriber(app.ApplicationServices);
+        public static ISubscriber UseRabbitMq(
+            this IApplicationBuilder app)
+            => new RabbitMqSubscriber(app.ApplicationServices);
 
         private static IConnection GetConnection(RabbitMqOptions options)
             => new ConnectionFactory
@@ -38,7 +53,20 @@ namespace Flour.RabbitMQ
                 VirtualHost = options.VirtualHost,
                 UserName = options.Username,
                 Password = options.Password,
+                RequestedHeartbeat = options.RequestedHeartbeat.Seconds(),
+                RequestedConnectionTimeout = options.RequestedConnectionTimeout.Seconds(),
+                SocketReadTimeout = options.SocketReadTimeout.Seconds(),
+                SocketWriteTimeout = options.SocketWriteTimeout.Seconds(),
+                RequestedChannelMax = options.RequestedChannelMax,
+                RequestedFrameMax = options.RequestedFrameMax,
+                UseBackgroundThreadsForIO = options.UseBackgroundThreadsForIo,
                 DispatchConsumersAsync = true,
+                ContinuationTimeout = options.ContinuationTimeout.Seconds(),
+                HandshakeContinuationTimeout = options.HandshakeContinuationTimeout.Seconds(),
+                NetworkRecoveryInterval = options.NetworkRecoveryInterval.Seconds(),
             }.CreateConnection(options.HostNames.ToArray(), options.ClientName);
+
+        private static TimeSpan Seconds(this int value)
+            => TimeSpan.FromSeconds(value);
     }
 }

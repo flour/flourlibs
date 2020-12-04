@@ -7,14 +7,15 @@ namespace Flour.BlobStorage.AmazonS3
 {
     public static class TypesRegistration
     {
-        public const string DefaultSection = "s3blob";
+        private const string DefaultSection = "s3blob";
 
         public static IServiceCollection AddAmazonS3BlobStorage(
             this IServiceCollection services, 
-            IConfiguration configuration)
+            IConfiguration configuration,
+            string sectionName = DefaultSection)
         {
             services
-                .Configure<AmazonS3Settings>(options => configuration.GetSection(DefaultSection)?.Bind(options))
+                .Configure<AmazonS3Settings>(options => configuration.GetSection(sectionName)?.Bind(options))
                 .AddTransient<IAmazonS3ClientFactory, AmazonS3ClientFactory>()
                 .AddSingleton(s => s.GetService<IAmazonS3ClientFactory>().Create())
                 .AddSingleton<ITransferUtility, TransferUtility>()

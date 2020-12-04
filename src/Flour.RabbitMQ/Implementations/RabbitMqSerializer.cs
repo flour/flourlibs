@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Flour.RabbitMQ.Implementations
 {
-    public class RabbitMQSerializer : IBrokerSerializer
+    public class RabbitMqSerializer : IBrokerSerializer
     {
         private readonly JsonSerializerSettings _settings;
-        public RabbitMQSerializer(JsonSerializerSettings settings = null)
+        public RabbitMqSerializer(JsonSerializerSettings settings = null)
         {
             _settings = settings ?? new JsonSerializerSettings
             {
