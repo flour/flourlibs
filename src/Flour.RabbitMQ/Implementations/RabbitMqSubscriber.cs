@@ -4,15 +4,23 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Concurrent;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Flour.RabbitMQ.Implementations
 {
     public class RabbitMqSubscriber : ISubscriber
     {
+        private int _disposed = 0;
+
+        private static readonly ConcurrentDictionary<string, ChannelInfo> _channels =
+            new ConcurrentDictionary<string, ChannelInfo>();
+
         private readonly bool _isLoggerEnabled;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IModel _channel;
+        private readonly IConnection _connection;
         private readonly IBrokerPublisher _brokerPublisher;
         private readonly IBrokerSerializer _serializer;
         private readonly IConventionProvider _conventionProvider;
@@ -22,7 +30,7 @@ namespace Flour.RabbitMQ.Implementations
         public RabbitMqSubscriber(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _channel = serviceProvider.GetRequiredService<IConnection>().CreateModel();
+            _connection = serviceProvider.GetRequiredService<IConnection>();
             _brokerPublisher = serviceProvider.GetRequiredService<IBrokerPublisher>();
             _serializer = serviceProvider.GetRequiredService<IBrokerSerializer>();
             _conventionProvider = serviceProvider.GetRequiredService<IConventionProvider>();
@@ -34,23 +42,32 @@ namespace Flour.RabbitMQ.Implementations
 
         public ISubscriber Subscribe<T>(Func<IServiceProvider, T, object, Task> handler) where T : class
         {
+            var declare = _options.Queue?.Declare ?? true;
             var durable = _options.Queue.Durable;
             var exclusive = _options.Queue.Exclusive;
             var autoDelete = _options.Queue.AutoDelete;
             var convention = _conventionProvider.Get<T>();
             var qosOptions = _options.Qos;
+            var channelKey = $"{convention.Exchange}:{convention.Queue}:{convention.Route}";
 
-            if (_options.Queue.Declare)
+            if (_channels.ContainsKey(channelKey))
+                return this;
+
+            var channel = _connection.CreateModel();
+            if (!_channels.TryAdd(channelKey, new ChannelInfo(channel, convention)))
+                return this;
+
+            if (declare)
             {
                 if (_isLoggerEnabled)
                     _logger.LogTrace($"Declaring a queue: {convention}");
-                _channel.QueueDeclare(convention.Queue, durable, exclusive, autoDelete);
+                channel.QueueDeclare(convention.Queue, durable, exclusive, autoDelete);
             }
 
-            _channel.QueueBind(convention.Queue, convention.Exchange, convention.Route);
-            _channel.BasicQos(qosOptions.PrefetchSize, qosOptions.PrefetchCount, qosOptions.IsGlobal);
+            channel.QueueBind(convention.Queue, convention.Exchange, convention.Route);
+            channel.BasicQos(qosOptions.PrefetchSize, qosOptions.PrefetchCount, qosOptions.IsGlobal);
 
-            var consumer = new AsyncEventingBasicConsumer(_channel);
+            var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += async (sender, args) =>
             {
                 var messageId = args.BasicProperties.MessageId;
@@ -63,27 +80,42 @@ namespace Flour.RabbitMQ.Implementations
 
                 try
                 {
-                    var message = _serializer.DeserializeBinary<T>(args.Body.ToArray());
-                    await HandleAsync(message, messageId, correlationId, args, null, handler);
+                    var payload = Encoding.UTF8.GetString(args.Body.Span);
+                    var message = _serializer.Deserialize<T>(payload);
+                    await HandleAsync(channel, message, messageId, correlationId, null, args, handler)
+                        .ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to handle message");
-                    _channel.BasicAck(args.DeliveryTag, false);
+                    channel.BasicAck(args.DeliveryTag, false);
                     throw;
                 }
             };
 
-            _channel.BasicConsume(convention.Queue, false, consumer);
+            channel.BasicConsume(convention.Queue, false, consumer);
             return this;
         }
 
+        public void Dispose()
+        {
+            if (Interlocked.Increment(ref _disposed) > 1)
+                return;
+
+            foreach (var (key, channel) in _channels)
+            {
+                channel?.Dispose();
+                _channels.TryRemove(key, out _);
+            }
+        }
+
         private async Task HandleAsync<T>(
-            T message, 
-            string messageId, 
-            string correlationId, 
+            IModel channel,
+            T message,
+            string messageId,
+            string correlationId,
             object context,
-            BasicDeliverEventArgs args, 
+            BasicDeliverEventArgs args,
             Func<IServiceProvider, T, object, Task> handler)
         {
             var messageInfo = $"message #'{messageId}' and correlation ID #'{correlationId}'";
@@ -101,7 +133,24 @@ namespace Flour.RabbitMQ.Implementations
             }
             finally
             {
-                _channel.BasicAck(args.DeliveryTag, false);
+                channel.BasicAck(args.DeliveryTag, false);
+            }
+        }
+
+        private class ChannelInfo : IDisposable
+        {
+            public IModel Channel { get; }
+            public IMessageConvention Convention { get; }
+
+            public ChannelInfo(IModel channel, IMessageConvention convention)
+            {
+                Channel = channel;
+                Convention = convention;
+            }
+
+            public void Dispose()
+            {
+                Channel?.Dispose();
             }
         }
     }
