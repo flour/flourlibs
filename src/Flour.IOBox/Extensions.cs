@@ -16,6 +16,7 @@ namespace Flour.IOBox
             string sectionName = DefaultSection)
         {
             services.Configure<InOutSettings>(opts => configuration.GetSection(sectionName).Bind(opts));
+            services.AddHostedService<OutboxProcessor>();
 
             var config = new OutboxConfig(
                 services,
@@ -30,8 +31,7 @@ namespace Flour.IOBox
         }
 
         private static IOutboxConfig AddInMemory(
-            this IOutboxConfig config,
-            string mongoSectionName = null)
+            this IOutboxConfig config)
         {
             config.Services
                 .AddTransient<IOutboxHandler, InMemoryOutbox>()
