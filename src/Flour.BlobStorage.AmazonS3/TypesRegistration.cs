@@ -17,7 +17,7 @@ namespace Flour.BlobStorage.AmazonS3
             services
                 .Configure<AmazonS3Settings>(options => configuration.GetSection(sectionName)?.Bind(options))
                 .AddTransient<IAmazonS3ClientFactory, AmazonS3ClientFactory>()
-                .AddSingleton(s => s.GetService<IAmazonS3ClientFactory>().Create())
+                .AddSingleton(s => s.GetRequiredService<IAmazonS3ClientFactory>().Create())
                 .AddSingleton<ITransferUtility, TransferUtility>()
                 .AddTransient<IBlobStorageWriter<AmazonS3BlobReference>, AmazonS3BlobStorageWriter>()
                 .AddTransient<IBlobStorageReader<AmazonS3BlobReference>, AmazonS3BlobStorageReader>()
