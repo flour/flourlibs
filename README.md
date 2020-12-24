@@ -22,7 +22,7 @@ Simplified implementation of CQRS.
 
 ## Flour.CQRS.Brokers ![NuGet](https://img.shields.io/nuget/v/Flour.CQRS.Brokers.svg?style=flat)
 
-**WIP**
+General contracts for event publishing 
 
 ## Flour.BlobStorage.Contracts ![NuGet](https://img.shields.io/nuget/v/Flour.BlobStorage.Contracts.svg?style=flat)
 
@@ -35,7 +35,11 @@ The Amazon S3 implementation uses the AWS SDK for .NET to interact with the Amaz
 
 ## Flour.RabbitMQ ![NuGet](https://img.shields.io/nuget/v/Flour.RabbitMQ.svg?style=flat)
 
-**WIP**
+Wrapper around RabbitMQ to publish domain events
+
+## Flour.IOBox ![NuGet](https://img.shields.io/nuget/v/Flour.IOBox.svg?style=flat)
+
+Outbox pattern contracts and in-memory implementation 
 
 ## Flour.Tracing.Jaeger ![NuGet](https://img.shields.io/nuget/v/Flour.Tracing.Jaeger.svg?style=flat)
 
