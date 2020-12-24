@@ -14,12 +14,8 @@ namespace Flour.IOBox
         private readonly IOptions<InOutSettings> _settings;
         private readonly ILogger<InMemoryOutbox> _logger;
 
-        private readonly ConcurrentDictionary<string, bool> _inboxMessages
-            = new ConcurrentDictionary<string, bool>();
-
-        private readonly ConcurrentDictionary<string, OutboxMessage> _outboxMessages
-            = new ConcurrentDictionary<string, OutboxMessage>();
-
+        private readonly ConcurrentDictionary<string, bool> _inboxMessages = new();
+        private readonly ConcurrentDictionary<string, OutboxMessage> _outboxMessages = new();
 
         public bool Enabled => _settings.Value?.Enabled ?? false;
 

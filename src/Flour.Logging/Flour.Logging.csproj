@@ -20,7 +20,6 @@
     <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Graylog" Version="2.2.1" />    
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="8.4.1" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
   </ItemGroup>
 
 </Project>

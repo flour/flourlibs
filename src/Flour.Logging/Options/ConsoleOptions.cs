@@ -1,17 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
-using Serilog;
+﻿using Serilog;
+using Serilog.Events;
 
 namespace Flour.Logging.Options
 {
     public class ConsoleOptions : ILoggerOptions
     {
         public bool Enabled { get; set; }
-        public LogLevel MinLevel { get; set; } = LogLevel.Information;
+        public LogEventLevel MinLevel { get; set; } = LogEventLevel.Information;
 
         public void Configure(LoggerConfiguration configuration)
         {
-            if (Enabled)
-                configuration.WriteTo.Console();
+            if (!Enabled)
+                return;
+            configuration.WriteTo.Console(MinLevel);
         }
     }
 }
