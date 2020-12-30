@@ -23,7 +23,8 @@ namespace Flour.RabbitMQ.Implementations
             IDictionary<string, object> headers = null
         ) where T : class
         {
-            _client.Send(message, _conventionProvider.Get(message.GetType()), messageId, correlationId, context, headers);
+            if (message is {})
+                _client.Send(message, _conventionProvider.Get(message.GetType()), messageId, correlationId, context, headers);
             return Task.CompletedTask;
         }
     }

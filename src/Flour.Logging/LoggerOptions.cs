@@ -7,6 +7,7 @@ namespace Flour.Logging
     public class LoggerOptions
     {
         public Dictionary<string, string> Labels { get; set; }
+        public FilteringOptions Filters { get; set; }
         public ConsoleOptions Console { get; set; }
         public FileOptions File { get; set; }
         public ElasticOptions ElasticSearch { get; set; }

@@ -24,7 +24,12 @@ namespace Flour.RabbitMQ.Implementations
         public IMessageConvention Get(Type type)
         {
             var convention = _conventionsStore.Get(type);
-            return convention ?? new MessageConvention(type, GetRoute(type), GetExchange(type), GetQueue(type));
+            if (convention is not null)
+                return convention;
+
+            convention = new MessageConvention(type, GetRoute(type), GetExchange(type), GetQueue(type));
+            _conventionsStore.Add(type, convention);
+            return convention;
         }
 
         public string GetExchange(Type type)
@@ -52,7 +57,7 @@ namespace Flour.RabbitMQ.Implementations
             return attribute?.Route ?? type.Name;
         }
 
-        private MessagingAttribute GetMessagingAttribute(Type type)
+        private static MessagingAttribute GetMessagingAttribute(Type type)
             => type.GetCustomAttribute<MessagingAttribute>();
 
         private IMessageConvention BuildConvention(Type type)

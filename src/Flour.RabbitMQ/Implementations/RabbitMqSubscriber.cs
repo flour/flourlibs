@@ -13,10 +13,9 @@ namespace Flour.RabbitMQ.Implementations
 {
     public class RabbitMqSubscriber : ISubscriber
     {
-        private int _disposed = 0;
+        private int _disposed;
 
-        private static readonly ConcurrentDictionary<string, ChannelInfo> _channels =
-            new ConcurrentDictionary<string, ChannelInfo>();
+        private static readonly ConcurrentDictionary<string, ChannelInfo> _channels = new();
 
         private readonly bool _isLoggerEnabled;
         private readonly IServiceProvider _serviceProvider;
