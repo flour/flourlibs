@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.IOBox.Tests", "tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Metrics.Prometheus", "src\Flour.Metrics.Prometheus\Flour.Metrics.Prometheus.csproj", "{F89BE6F8-AC4B-43D1-BDD7-0C84385FE7B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Metrics.Prometheus", "tests\Flour.Metrics.Prometheus\Flour.Metrics.Prometheus.csproj", "{46220EA2-4085-4B38-85F3-BCE431FC2F14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Metrics.Prometheus.Tests", "tests\Flour.Metrics.Prometheus.Tests\Flour.Metrics.Prometheus.Tests.csproj", "{46220EA2-4085-4B38-85F3-BCE431FC2F14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
