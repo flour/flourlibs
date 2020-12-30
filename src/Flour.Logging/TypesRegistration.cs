@@ -49,6 +49,7 @@ namespace Flour.Logging
 
             config.Enrich.WithExceptionDetails();
 
+            options.Filters?.Configure(config);
             options.Console?.Configure(config);
             options.File?.Configure(config);
             options.ElasticSearch?.Configure(config);
