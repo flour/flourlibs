@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
-using Flour.Commons;
 using Flour.Vault.Internals;
 using Flour.Vault.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -115,5 +113,20 @@ namespace Flour.Vault
             var client = new VaultClient(settings);
             return (client, settings);
         }
+
+        private static TModel GetOptions<TModel>(this IConfiguration configuration, string sectionName)
+            where TModel : new()
+        {
+            var model = new TModel();
+            configuration.GetSection(sectionName).Bind(model);
+            return model;
+        }
+
+        public static TModel GetOptions<TModel>(this IServiceCollection services, string sectionName)
+            where TModel : new()
+            => services
+                .BuildServiceProvider()
+                .GetRequiredService<IConfiguration>()
+                .GetOptions<TModel>(sectionName);
     }
 }

@@ -2,6 +2,7 @@
 using Jaeger;
 using Jaeger.Reporters;
 using Jaeger.Samplers;
+using Jaeger.Senders;
 using Jaeger.Senders.Thrift;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ namespace Flour.Tracing.Jaeger
 {
     public static class Extensions
     {
+        private const int MaxPacketSize = 64967;
         private const string DefaultSectionName = "jaeger";
 
         public static IServiceCollection AddJaeger(
@@ -40,7 +42,7 @@ namespace Flour.Tracing.Jaeger
                 {
                     var sampler = GetJaegerSampler(options);
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-                    var jSender = new UdpSender(options.Host, options.Port, options.MaxPacketSize);
+                    var jSender = GetSender(options);
                     var jReporter = new RemoteReporter.Builder()
                         .WithLoggerFactory(loggerFactory)
                         .WithSender(jSender)
@@ -56,6 +58,43 @@ namespace Flour.Tracing.Jaeger
 
                     return tracer;
                 });
+        }
+
+        private static ISender GetSender(JaegerOptions options)
+            => options switch
+            {
+                { } when options.Udp is { } => new UdpSender(options.Udp.Host, options.Udp.Port,
+                    options.MaxPacketSize <= 0 ? MaxPacketSize : options.MaxPacketSize),
+                { } when options.Http is { } => GetHttpSender(options),
+                _ => new NoopSender()
+            };
+
+        private static ISender GetHttpSender(JaegerOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.Http.Host))
+            {
+                throw new Exception("Missing Jaeger HTTP sender endpoint.");
+            }
+
+            var maxPacketSize = options.MaxPacketSize <= 0 ? MaxPacketSize : options.MaxPacketSize;
+            var builder = new HttpSender.Builder(options.Http.Host).WithMaxPacketSize(maxPacketSize);
+
+            if (!string.IsNullOrWhiteSpace(options.Http.Token))
+            {
+                builder = builder.WithAuth(options.Http.Token);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Http.Username) && !string.IsNullOrWhiteSpace(options.Http.Password))
+            {
+                builder = builder.WithAuth(options.Http.Username, options.Http.Password);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Http.Ua))
+            {
+                builder = builder.WithUserAgent(options.Http.Ua);
+            }
+
+            return builder.Build();
         }
 
         private static ISampler GetJaegerSampler(JaegerOptions options)
