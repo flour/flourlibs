@@ -23,8 +23,7 @@ namespace Flour.Tracing.Jaeger
 
     public class HttpSettings
     {
-        public string Host { get; set; }
-        public int Port { get; set; } = 14268;
+        public string Url { get; set; }
         public string Token { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

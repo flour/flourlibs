@@ -84,13 +84,13 @@ namespace Flour.Tracing.Jaeger
 
         private static ISender GetHttpSender(JaegerOptions options)
         {
-            if (string.IsNullOrWhiteSpace(options.Http.Host))
+            if (string.IsNullOrWhiteSpace(options.Http.Url))
             {
                 throw new Exception("Missing Jaeger HTTP sender endpoint.");
             }
 
             var maxPacketSize = options.Http.MaxPacketSize <= 0 ? MaxPacketSizeHttp : options.Http.MaxPacketSize;
-            var builder = new HttpSender.Builder(options.Http.Host).WithMaxPacketSize(maxPacketSize);
+            var builder = new HttpSender.Builder(options.Http.Url).WithMaxPacketSize(maxPacketSize);
 
             if (!string.IsNullOrWhiteSpace(options.Http.Token))
             {
