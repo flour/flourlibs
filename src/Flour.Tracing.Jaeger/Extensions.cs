@@ -9,13 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenTracing;
+using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing.Util;
 
 namespace Flour.Tracing.Jaeger
 {
     public static class Extensions
     {
-        private const int MaxPacketSize = 64967;
+        private const int MaxPacketSizeUdp = 64967;
+        private const int MaxPacketSizeHttp = 1048576;
         private const string DefaultSectionName = "jaeger";
 
         public static IServiceCollection AddJaeger(
@@ -34,6 +36,17 @@ namespace Flour.Tracing.Jaeger
         {
             if (options == null || !options.Enabled)
                 return services;
+
+            if (options.ExcludePaths is { })
+            {
+                services.Configure<AspNetCoreDiagnosticOptions>(o =>
+                {
+                    foreach (var path in options.ExcludePaths)
+                    {
+                        o.Hosting.IgnorePatterns.Add(x => x.Request.Path == path);
+                    }
+                });
+            }
 
             return services
                 .AddSingleton(options)
@@ -64,7 +77,7 @@ namespace Flour.Tracing.Jaeger
             => options switch
             {
                 { } when options.Udp is { } => new UdpSender(options.Udp.Host, options.Udp.Port,
-                    options.MaxPacketSize <= 0 ? MaxPacketSize : options.MaxPacketSize),
+                    options.MaxPacketSize <= 0 ? MaxPacketSizeUdp : options.MaxPacketSize),
                 { } when options.Http is { } => GetHttpSender(options),
                 _ => new NoopSender()
             };
@@ -76,7 +89,7 @@ namespace Flour.Tracing.Jaeger
                 throw new Exception("Missing Jaeger HTTP sender endpoint.");
             }
 
-            var maxPacketSize = options.MaxPacketSize <= 0 ? MaxPacketSize : options.MaxPacketSize;
+            var maxPacketSize = options.Http.MaxPacketSize <= 0 ? MaxPacketSizeHttp : options.Http.MaxPacketSize;
             var builder = new HttpSender.Builder(options.Http.Host).WithMaxPacketSize(maxPacketSize);
 
             if (!string.IsNullOrWhiteSpace(options.Http.Token))
