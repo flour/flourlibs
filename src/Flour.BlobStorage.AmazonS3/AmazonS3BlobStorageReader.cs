@@ -37,10 +37,11 @@ namespace Flour.BlobStorage.AmazonS3
                 };
 
                 using var response = await _client.GetObjectAsync(request);
-                using var responseStream = response.ResponseStream;
+                await using var responseStream = response.ResponseStream;
                 var memoryStream = new MemoryStream();
 
                 await responseStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
 
                 var metadata = response.Metadata.Keys
                     .Select(key => new KeyValuePair<string, string>(key, response.Metadata[key]))
@@ -54,6 +55,31 @@ namespace Flour.BlobStorage.AmazonS3
                 HandleNotFound(reference.Bucket, reference.Key, exception);
                 throw new BlobStorageException(
                     $"An exception occurred while getting blob with key \"{reference.Key}\" from bucket \"{reference.Bucket}\"",
+                    exception);
+            }
+        }
+
+        public async Task<IDictionary<string, string>> GetMetadata(AmazonS3BlobReference reference)
+        {
+            if (reference == null)
+                throw new ArgumentNullException(nameof(reference));
+            try
+            {
+                var request = new GetObjectMetadataRequest
+                {
+                    BucketName = reference.Bucket,
+                    Key = reference.Key
+                };
+
+                var response = await _client.GetObjectMetadataAsync(request).ConfigureAwait(false);
+                return response.Metadata.Keys.Select(e => new {Key = e, Value = response.Metadata[e]})
+                    .ToDictionary(e => e.Key, e => e.Value);
+            }
+            catch (AmazonS3Exception exception)
+            {
+                HandleNotFound(reference.Bucket, reference.Key, exception);
+                throw new BlobStorageException(
+                    $"An exception occurred while getting metadata with key \"{reference.Key}\" from bucket \"{reference.Bucket}\"",
                     exception);
             }
         }
@@ -89,7 +115,8 @@ namespace Flour.BlobStorage.AmazonS3
             var httpError = exception.InnerException as HttpErrorResponseException;
             if (httpError?.Response.StatusCode == HttpStatusCode.NotFound)
             {
-                var message = $"{key} is missing from the {bucket} bucket in Amazon 23 store. It has either expired or an invalid id has been supplied";
+                var message =
+                    $"{key} is missing from the {bucket} bucket in Amazon 23 store. It has either expired or an invalid id has been supplied";
                 _logger.LogWarning(httpError, message);
                 throw new BlobNotFoundException(message, exception);
             }
