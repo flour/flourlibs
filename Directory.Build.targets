@@ -1,14 +1,13 @@
 ﻿<Project>
-
-  <Target Name="Versioning" BeforeTargets="MinVer">
     <PropertyGroup>
-      <MinVerSkip Condition="'$(Configuration)' == 'Debug'">true</MinVerSkip>
+        <MinVerSkip Condition="'$(Configuration)' == 'Debug'">true</MinVerSkip>
     </PropertyGroup>
 
-    <PropertyGroup Label="Build">
-      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PackageVersion>
-      <MinVerVerbosity>normal</MinVerVerbosity>
-    </PropertyGroup>
-  </Target>
+    <Target Name="Versioning" BeforeTargets="MinVer">
+        <PropertyGroup Label="Build">
+            <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PackageVersion>
+            <MinVerVerbosity>normal</MinVerVerbosity>
+        </PropertyGroup>
+    </Target>
 
 </Project>
