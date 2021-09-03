@@ -1,4 +1,5 @@
 ﻿using System;
+using Flour.Logging.Enrichers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -48,6 +49,7 @@ namespace Flour.Logging
                          throw new ArgumentNullException(nameof(configuration), @"Logger configuration cannot by null");
 
             config.Enrich.WithExceptionDetails();
+            config.Enrich.With<LogLevelEnricher>();
 
             options.Filters?.Configure(config);
             options.Console?.Configure(config);
