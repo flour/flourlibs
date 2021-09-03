@@ -32,8 +32,8 @@ jobs:
         run: dotnet tool restore
       - name: "Dotnet Cake Build"
         run: dotnet cake --target=Build
-      - name: "Dotnet Cake Test"
-        run: dotnet cake --target=Test
+#      - name: "Dotnet Cake Test"
+#        run: dotnet cake --target=Test
       - name: "Dotnet Cake Pack"
         if: success()
         run: dotnet cake --target=Pack
