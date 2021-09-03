@@ -21,7 +21,7 @@ namespace Flour.BlobStorage.AmazonS3
                 .AddSingleton<ITransferUtility, TransferUtility>()
                 .AddTransient<IBlobStorageWriter<AmazonS3BlobReference>, AmazonS3BlobStorageWriter>()
                 .AddTransient<IBlobStorageReader<AmazonS3BlobReference>, AmazonS3BlobStorageReader>()
-                .AddTransient<IBlobStorageDeleter<AmazonS3BlobContainer>, AmazonS3BlobStorageDeleter>();
+                .AddTransient<IBlobStorageDeleter<AmazonS3BlobContainer, AmazonS3BlobReference>, AmazonS3BlobStorageDeleter>();
 
             return services;
         }

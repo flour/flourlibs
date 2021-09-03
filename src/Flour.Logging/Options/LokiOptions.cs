@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System;
+using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -20,11 +21,12 @@ namespace Flour.Logging.Options
                 return;
 
             var credentials = UseCredentials ? new LokiCredentials {Login = Login, Password = Password} : null;
-
             configuration.WriteTo.GrafanaLoki(
                 Url,
                 credentials: credentials,
-                restrictedToMinimumLevel: MinLevel
+                restrictedToMinimumLevel: MinLevel,
+                period: TimeSpan.FromMilliseconds(1000),
+                textFormatter: new LokiJsonTextFormatter()
             );
         }
     }
