@@ -24,7 +24,6 @@ namespace Flour.Metrics.Prometheus
                 return services;
             }
 
-
             return services
                 .AddHostedService<PrometheusHost>()
                 .AddSingleton<PrometheusMiddleware>()

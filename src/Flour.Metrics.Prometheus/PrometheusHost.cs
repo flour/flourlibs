@@ -28,7 +28,6 @@ namespace Flour.Metrics.Prometheus
                     .Customize()
                     .WithContentionStats()
                     .WithJitStats()
-                    .WithThreadPoolSchedulingStats()
                     .WithThreadPoolStats()
                     .WithGcStats()
                     .WithExceptionStats()

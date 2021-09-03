@@ -5,12 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
-        <PackageReference Include="RedLock.net" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+        <PackageReference Include="RedLock.net" Version="2.3.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Flour.Redis\Flour.Redis.csproj"/>
+        <ProjectReference Include="..\Flour.Redis\Flour.Redis.csproj" />
     </ItemGroup>
 
 </Project>
