@@ -56,6 +56,7 @@ namespace Flour.Logging
             options.File?.Configure(config);
             options.ElasticSearch?.Configure(config);
             options.Loki?.Configure(config);
+            options.Seq?.Configure(config);
 
             if (options.Labels is null)
                 return;

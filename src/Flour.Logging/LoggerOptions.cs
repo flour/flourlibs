@@ -12,5 +12,6 @@ namespace Flour.Logging
         public FileOptions File { get; set; }
         public ElasticOptions ElasticSearch { get; set; }
         public LokiOptions Loki { get; set; }
+        public SeqOptions Seq { get; set; }
     }
 }
