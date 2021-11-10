@@ -12,7 +12,11 @@ namespace Flour.Tracing.Jaeger
         public double MaxTracesPerSecond { get; set; } = 5;
         public double SamplingRate { get; set; } = 0.5;
         public string Sampler { get; set; }
-        public IEnumerable<string> ExcludePaths { get; set; }
+
+        public IEnumerable<string> ExcludePaths { get; set; } = new List<string>
+        {
+            "/health", "/metrics", "/swagger", "/swagger/index.html"
+        };
     }
 
     public class UdpSettings

@@ -34,28 +34,30 @@ namespace Flour.Tracing.Jaeger
             this IServiceCollection services,
             JaegerOptions options)
         {
-            if (options == null || !options.Enabled)
+            if (options is not { Enabled: true })
                 return services;
-
-            if (options.ExcludePaths is { })
-            {
-                services.Configure<AspNetCoreDiagnosticOptions>(o =>
-                {
-                    foreach (var path in options.ExcludePaths)
-                    {
-                        o.Hosting.IgnorePatterns.Add(x => x.Request.Path == path);
-                    }
-                });
-            }
 
             return services
                 .AddSingleton(options)
-                .AddOpenTracing()
+                .AddOpenTracing(builder =>
+                {
+                    builder.ConfigureAspNetCore(opts =>
+                    {
+                        opts.Hosting.OperationNameResolver = ctx =>
+                            $"{options.ServiceName} {ctx.Request.Path.Value}";
+
+                        if (options.ExcludePaths is null) return;
+                        
+                        foreach (var path in options.ExcludePaths)
+                            opts.Hosting.IgnorePatterns.Add(x => x.Request.Path == path);
+                    });
+                })
                 .AddSingleton<ITracer>(provider =>
                 {
                     var sampler = GetJaegerSampler(options);
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     var jSender = GetSender(options);
+                    
                     var jReporter = new RemoteReporter.Builder()
                         .WithLoggerFactory(loggerFactory)
                         .WithSender(jSender)
