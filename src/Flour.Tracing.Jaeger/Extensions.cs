@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Jaeger;
 using Jaeger.Reporters;
 using Jaeger.Samplers;
@@ -67,6 +68,7 @@ namespace Flour.Tracing.Jaeger
                         .WithLoggerFactory(loggerFactory)
                         .WithReporter(jReporter)
                         .WithSampler(sampler)
+                        .WithTags(options.Tags ?? new List<KeyValuePair<string, string>>())
                         .Build();
 
                     GlobalTracer.Register(tracer);

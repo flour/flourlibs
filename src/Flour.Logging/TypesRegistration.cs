@@ -50,6 +50,7 @@ namespace Flour.Logging
 
             config.Enrich.WithExceptionDetails();
             config.Enrich.With<LogLevelEnricher>();
+            config.MinimumLevel.Is(options.MinLevel); 
 
             options.Filters?.Configure(config);
             options.Console?.Configure(config);

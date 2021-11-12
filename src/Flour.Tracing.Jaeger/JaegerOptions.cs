@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Flour.Tracing.Jaeger
 {
@@ -13,6 +14,7 @@ namespace Flour.Tracing.Jaeger
         public double SamplingRate { get; set; } = 0.5;
         public string Sampler { get; set; }
 
+        public IEnumerable<KeyValuePair<string, string>> Tags { get; set; } = Enumerable.Empty<KeyValuePair<string, string>>();
         public IEnumerable<string> ExcludePaths { get; set; } = new List<string>
         {
             "/health", "/metrics", "/swagger", "/swagger/index.html"

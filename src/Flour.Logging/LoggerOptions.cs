@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Flour.Logging.Options;
+using Serilog.Events;
 
 namespace Flour.Logging
 {
-    // TODO: split by assembly
     public class LoggerOptions
     {
+        public LogEventLevel MinLevel { get; set; } = LogEventLevel.Debug;
         public Dictionary<string, string> Labels { get; set; }
         public FilteringOptions Filters { get; set; }
         public ConsoleOptions Console { get; set; }
