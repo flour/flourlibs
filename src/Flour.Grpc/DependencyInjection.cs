@@ -15,12 +15,12 @@ namespace Flour.Grpc
             this IServiceCollection services,
             IConfiguration configuration,
             string sectionName,
-            bool useDefaultInterceptors = true) where T : class
+            Action<IServiceProvider, GrpcClientFactoryOptions> configure = null) where T : class
         {
             GrpcClientFactory.AllowUnencryptedHttp2 = true;
             var serviceUrl = configuration.GetValue<string>(sectionName);
             return services
-                .AddCodeFirstGrpcClient<T>(opts =>
+                .AddCodeFirstGrpcClient<T>((sp, opts) =>
                 {
                     opts.Address = new Uri(serviceUrl);
                     opts.ChannelOptionsActions.Add(channelOpts =>
@@ -33,6 +33,7 @@ namespace Flour.Grpc
                             EnableMultipleHttp2Connections = true
                         };
                     });
+                    configure?.Invoke(sp, opts);
                 }).Services;
         }
 

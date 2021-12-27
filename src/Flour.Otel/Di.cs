@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,7 @@ namespace Flour.OTel
     public static class Di
     {
         private const string DefaultSection = "otel:tracing";
+        private static List<Regex> _expressionFilters = new();
 
         public static IServiceCollection AddTracing(
             this IServiceCollection services,
@@ -24,11 +27,11 @@ namespace Flour.OTel
             return services.AddOpenTelemetryTracing(builder =>
             {
                 builder
-                    .AddAspNetCoreInstrumentation(e =>
+                    .AddAspNetCoreInstrumentation(options =>
                     {
-                        e.EnableGrpcAspNetCoreSupport = true;
-                        e.RecordException = true;
-                        e.Enrich = (activity, eventName, rawObject) =>
+                        options.EnableGrpcAspNetCoreSupport = true;
+                        options.RecordException = true;
+                        options.Enrich = (activity, eventName, rawObject) =>
                         {
                             if (!eventName.Equals("OnStartActivity"))
                                 return;
@@ -43,34 +46,53 @@ namespace Flour.OTel
                             activity.SetCustomProperty("traceId_prop", httpRequest.HttpContext.TraceIdentifier);
                         };
 
-                        if (settings.Filters.Enabled)
+                        if (!settings.Filters.Enabled)
+                            return;
+                        
+                        if (settings.Filters.Expressions?.Count > 0)
+                            _expressionFilters = settings.Filters.Expressions
+                                .Select(f => new Regex(f, RegexOptions.Compiled))
+                                .ToList();
+                            
+                        options.Filter = context =>
                         {
-                            e.Filter = context =>
+                            if (!context.Request.Path.HasValue ||
+                                string.IsNullOrWhiteSpace(context.Request.Path.Value))
+                                return false;
+
+                            var result = true;
+                            var requestPath = context.Request.Path.Value;
+                            
+                            if (settings.Filters.FilterExtensions.Any())
                             {
-                                var result = false;
-                                if (settings.Filters.FilterExtensions.Any() &&
-                                    !string.IsNullOrWhiteSpace(context.Request.Path.Value))
+                                var extension = requestPath.Split('.').LastOrDefault();
+                                if (!string.IsNullOrWhiteSpace(extension))
                                 {
-                                    var extension = context.Request.Path.Value.Split('.').LastOrDefault();
-                                    if (!string.IsNullOrWhiteSpace(extension))
-                                    {
-                                        result = settings.Filters.FilterExtensions
-                                            .Any(f => extension.StartsWith(f));
-                                    }
+                                    result = !settings.Filters.FilterExtensions
+                                        .Any(f => extension.StartsWith(f));
                                 }
+                            }
 
-                                if (settings.Filters.FilterPaths.Any() && context.Request.Path.HasValue)
-                                {
-                                    result = result || settings.Filters.FilterPaths
-                                        .Any(f => context.Request.Path.StartsWithSegments(f));
-                                }
+                            if (settings.Filters.Paths.Any())
+                            {
+                                var filteredByPath = !settings.Filters.Paths
+                                    .Any(f => context.Request.Path.StartsWithSegments(f) || requestPath.StartsWith(f));
+                               
+                                result = result && filteredByPath;
+                            }
 
-                                return result;
-                            };
-                        }
+                            if (_expressionFilters.Count > 0)
+                                result = result && !_expressionFilters.Any(f => f.IsMatch(requestPath));
+
+                            return result;
+                        };
+                        
                     })
                     .AddHttpClientInstrumentation()
-                    .AddGrpcClientInstrumentation()
+                    .AddGrpcClientInstrumentation(options =>
+                    {
+                        options.SuppressDownstreamInstrumentation = true;
+                    })
                     .AddSource(settings.ServiceName)
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
