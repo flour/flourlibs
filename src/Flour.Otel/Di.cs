@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
@@ -17,12 +19,27 @@ namespace Flour.OTel
         public static IServiceCollection AddTracing(
             this IServiceCollection services,
             IConfiguration configuration,
+            Action<Activity, HttpRequest> enricher = null,
             string sectionName = DefaultSection)
         {
             var settings = new TracingSettings();
             configuration.GetSection(sectionName).Bind(settings);
             if (!settings.Enabled)
                 return services;
+
+            if (settings.BaggageAsTags)
+            {
+                var listener = new ActivityListener
+                {
+                    ShouldListenTo = _ => true,
+                    ActivityStopped = act =>
+                    {
+                        foreach (var (key, value) in act.Baggage)
+                            act.AddTag(key, value);
+                    }
+                };
+                ActivitySource.AddActivityListener(listener);
+            }
 
             return services.AddOpenTelemetryTracing(builder =>
             {
@@ -38,22 +55,18 @@ namespace Flour.OTel
 
                             settings.Enrichers.ForEach(f => activity.AddTag(f.Key, f.Value));
 
-                            if (rawObject is not HttpRequest httpRequest)
-                                return;
-
-                            activity.SetTag("requestProtocol", httpRequest.Protocol);
-                            activity.AddBaggage("traceId_bag", httpRequest.HttpContext.TraceIdentifier);
-                            activity.SetCustomProperty("traceId_prop", httpRequest.HttpContext.TraceIdentifier);
+                            if (rawObject is HttpRequest httpRequest && enricher != null)
+                                enricher.Invoke(activity, httpRequest);
                         };
 
                         if (!settings.Filters.Enabled)
                             return;
-                        
+
                         if (settings.Filters.Expressions?.Count > 0)
                             _expressionFilters = settings.Filters.Expressions
                                 .Select(f => new Regex(f, RegexOptions.Compiled))
                                 .ToList();
-                            
+
                         options.Filter = context =>
                         {
                             if (!context.Request.Path.HasValue ||
@@ -62,7 +75,7 @@ namespace Flour.OTel
 
                             var result = true;
                             var requestPath = context.Request.Path.Value;
-                            
+
                             if (settings.Filters.FilterExtensions.Any())
                             {
                                 var extension = requestPath.Split('.').LastOrDefault();
@@ -77,7 +90,7 @@ namespace Flour.OTel
                             {
                                 var filteredByPath = !settings.Filters.Paths
                                     .Any(f => context.Request.Path.StartsWithSegments(f) || requestPath.StartsWith(f));
-                               
+
                                 result = result && filteredByPath;
                             }
 
@@ -86,13 +99,9 @@ namespace Flour.OTel
 
                             return result;
                         };
-                        
                     })
                     .AddHttpClientInstrumentation()
-                    .AddGrpcClientInstrumentation(options =>
-                    {
-                        options.SuppressDownstreamInstrumentation = true;
-                    })
+                    .AddGrpcClientInstrumentation(options => { options.SuppressDownstreamInstrumentation = true; })
                     .AddSource(settings.ServiceName)
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()

@@ -5,6 +5,7 @@ namespace Flour.OTel
     public class TracingSettings
     {
         public bool Enabled { get; set; } = true;
+        public bool BaggageAsTags { get; set; } = true;
         public string ServiceName { get; set; } = "SomeService";
         public List<KeyValuePair<string, string>> Enrichers { get; set; } = new();
         public List<KeyValuePair<string, object>> Attributes { get; set; } = new();
