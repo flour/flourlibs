@@ -10,6 +10,10 @@ namespace Flour.OTel
         public List<KeyValuePair<string, string>> Enrichers { get; set; } = new();
         public List<KeyValuePair<string, object>> Attributes { get; set; } = new();
         public FilterSettings Filters { get; set; } = new();
+
+        public bool MassTransitEnabled { get; set; } = true;
+        public bool EfCoreEnabled { get; set; } = true;
+        public bool RedisEnabled { get; set; } = false;
         public JaegerSettings Jaeger { get; set; } = new();
     }
 

@@ -43,21 +43,22 @@ namespace Flour.OTel
 
             return services.AddOpenTelemetryTracing(builder =>
             {
+                void Enrich(Activity activity, string eventName, object rawObject)
+                {
+                    if (!eventName.Equals("OnStartActivity"))
+                        return;
+
+                    settings.Enrichers.ForEach(f => activity.AddTag(f.Key, f.Value));
+                    if (rawObject is HttpRequest httpRequest && enricher != null)
+                        enricher.Invoke(activity, httpRequest);
+                }
+
                 builder
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         options.EnableGrpcAspNetCoreSupport = true;
                         options.RecordException = true;
-                        options.Enrich = (activity, eventName, rawObject) =>
-                        {
-                            if (!eventName.Equals("OnStartActivity"))
-                                return;
-
-                            settings.Enrichers.ForEach(f => activity.AddTag(f.Key, f.Value));
-
-                            if (rawObject is HttpRequest httpRequest && enricher != null)
-                                enricher.Invoke(activity, httpRequest);
-                        };
+                        options.Enrich = Enrich;
 
                         if (!settings.Filters.Enabled)
                             return;
@@ -101,7 +102,11 @@ namespace Flour.OTel
                         };
                     })
                     .AddHttpClientInstrumentation()
-                    .AddGrpcClientInstrumentation(options => { options.SuppressDownstreamInstrumentation = true; })
+                    .AddGrpcClientInstrumentation(options =>
+                    {
+                        options.SuppressDownstreamInstrumentation = true;
+                        options.Enrich = Enrich;
+                    })
                     .AddSource(settings.ServiceName)
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
@@ -109,6 +114,22 @@ namespace Flour.OTel
                             .AddAttributes(settings.Attributes)
                             .AddService(settings.ServiceName));
 
+                if (settings.MassTransitEnabled)
+                    builder.AddMassTransitInstrumentation();
+
+                if (settings.EfCoreEnabled)
+                    builder.AddEntityFrameworkCoreInstrumentation(options =>
+                        options.SetDbStatementForText = false);
+
+                if (settings.RedisEnabled)
+                    builder.AddRedisInstrumentation(null, options =>
+                    {
+                        options.Enrich = (activity, command) =>
+                        {
+                            // TODO: check possibilities
+                        };
+                    });
+                    
                 if (settings.Jaeger.Enabled)
                 {
                     builder.AddJaegerExporter(options =>
