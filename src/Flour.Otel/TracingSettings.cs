@@ -22,8 +22,16 @@ namespace Flour.OTel
         public bool Enabled { get; set; }
         public string Host { get; set; } = "localhost";
         public int Port { get; set; } = 6831;
+        public JaegerBatchingSettings Batch { get; set; }
     }
 
+    public class JaegerBatchingSettings
+    {
+        public int QueueLength { get; set; } = 64967;
+        public int BatchSize { get; set; } = 64967;
+        public int BatchingInterval { get; set; } = 5000;
+    }
+    
     public class FilterSettings
     {
         public bool Enabled { get; set; } = true;

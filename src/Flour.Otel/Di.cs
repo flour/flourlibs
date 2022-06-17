@@ -129,14 +129,19 @@ namespace Flour.OTel
                             // TODO: check possibilities
                         };
                     });
-                    
+
                 if (settings.Jaeger.Enabled)
                 {
                     builder.AddJaegerExporter(options =>
                     {
                         options.AgentHost = settings.Jaeger.Host;
                         options.AgentPort = settings.Jaeger.Port;
-                        options.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
+                        options.ExportProcessorType = OpenTelemetry.ExportProcessorType.Batch;
+                        options.BatchExportProcessorOptions.MaxQueueSize = settings.Jaeger.Batch.QueueLength;
+                        options.BatchExportProcessorOptions.MaxExportBatchSize =
+                            Math.Min(settings.Jaeger.Batch.BatchSize, settings.Jaeger.Batch.QueueLength);
+                        options.BatchExportProcessorOptions.ExporterTimeoutMilliseconds =
+                            settings.Jaeger.Batch.BatchingInterval;
                     });
                 }
             });
