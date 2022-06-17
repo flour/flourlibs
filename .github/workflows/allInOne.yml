@@ -48,12 +48,12 @@ jobs:
     name: "Push NuGet Packages"
     needs: build
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: "Download Artefact"
         uses: actions/download-artifact@v1
         with:
-          name: "ubuntu-20.04"
+          name: "ubuntu-latest"
           path: "./nugets"
       - name: Display structure of downloaded files
         run: ls -R
