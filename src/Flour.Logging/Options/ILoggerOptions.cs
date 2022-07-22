@@ -1,10 +1,9 @@
 ﻿using Serilog;
 
-namespace Flour.Logging.Options
+namespace Flour.Logging.Options;
+
+public interface ILoggerOptions
 {
-    public interface ILoggerOptions
-    {
-        bool Enabled { get; set; }
-        void Configure(LoggerConfiguration configuration);
-    }
+    bool Enabled { get; set; }
+    void Configure(LoggerConfiguration configuration);
 }

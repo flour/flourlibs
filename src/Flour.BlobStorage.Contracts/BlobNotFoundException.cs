@@ -1,10 +1,9 @@
-﻿using System;
+﻿namespace Flour.BlobStorage.Contracts;
 
-namespace Flour.BlobStorage.Contracts
+public class BlobNotFoundException : Exception
 {
-    public class BlobNotFoundException : Exception
+    public BlobNotFoundException(string message, Exception innerException)
+        : base(message, innerException)
     {
-        public BlobNotFoundException(string message, Exception innerException)
-            : base(message, innerException) { }
     }
 }

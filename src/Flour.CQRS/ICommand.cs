@@ -1,7 +1,5 @@
-﻿namespace Flour.CQRS
-{
-    public interface ICommand
-    {
+﻿namespace Flour.CQRS;
 
-    }
+public interface ICommand
+{
 }

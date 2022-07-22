@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace Flour.BrokersContracts;
 
-namespace Flour.BrokersContracts
+public interface IBrokerPublisher
 {
-    public interface IBrokerPublisher
-    {
-        Task Publish<T>(
-            T message,
-            string correlationId = null,
-            string messageId = null,
-            string context = null,
-            IDictionary<string, object> headers = null) where T : class;
-    }
+    Task Publish<T>(
+        T message,
+        string correlationId = null,
+        string messageId = null,
+        string context = null,
+        IDictionary<string, object> headers = null) where T : class;
 }

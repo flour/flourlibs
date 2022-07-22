@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿namespace Flour.BlobStorage.Contracts;
 
-namespace Flour.BlobStorage.Contracts
+public interface IBlobStorageWriter<in T>
+    where T : IBlobReference
 {
-    public interface IBlobStorageWriter<in T>
-        where T : IBlobReference
-    {
-        Task Store(T reference, Blob data);
-    }
+    Task Store(T reference, Blob data);
 }

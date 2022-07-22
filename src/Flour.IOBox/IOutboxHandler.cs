@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace Flour.IOBox;
 
-namespace Flour.IOBox
+public interface IOutboxHandler
 {
-    public interface IOutboxHandler
-    {
-        bool Enabled { get; }
+    bool Enabled { get; }
 
-        Task HandleAsync(string messageId, Func<Task> handler);
+    Task HandleAsync(string messageId, Func<Task> handler);
 
-        Task SendAsync<T>(
-            T message,
-            string outboxId = null,
-            string correlationId = null,
-            string messageId = null,
-            string messageContext = null,
-            IDictionary<string, object> headers = null)
-            where T : class;
-    }
+    Task SendAsync<T>(
+        T message,
+        string outboxId = null,
+        string correlationId = null,
+        string messageId = null,
+        string messageContext = null,
+        IDictionary<string, object> headers = null)
+        where T : class;
 }

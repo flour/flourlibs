@@ -1,44 +1,47 @@
-﻿using Flour.BrokersContracts;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.Text;
+﻿using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Flour.BrokersContracts;
 
-namespace Flour.RabbitMQ.Implementations
+namespace Flour.RabbitMQ.Implementations;
+
+public class RabbitMqSerializer : IBrokerSerializer
 {
-    public class RabbitMqSerializer : IBrokerSerializer
+    private readonly JsonSerializerOptions _settings;
+
+    public RabbitMqSerializer(JsonSerializerOptions settings = null)
     {
-        private readonly JsonSerializerSettings _settings;
-        public RabbitMqSerializer(JsonSerializerSettings settings = null)
+        _settings = settings ?? new JsonSerializerOptions
         {
-            _settings = settings ?? new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-        }
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            DefaultIgnoreCondition = JsonIgnoreCondition.Always,
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+    }
 
-        public T Deserialize<T>(string value)
-            => JsonConvert.DeserializeObject<T>(value, _settings);
+    public T Deserialize<T>(string value)
+    {
+        return JsonSerializer.Deserialize<T>(value, _settings);
+    }
 
-        public object Deserialize(string value)
-            => JsonConvert.DeserializeObject(value, _settings);
+    public string Serialize<T>(T value)
+    {
+        return JsonSerializer.Serialize(value, _settings);
+    }
 
-        public T DeserializeBinary<T>(byte[] value)
-            => Deserialize<T>(Encoding.UTF8.GetString(value));
+    public string Serialize(object value)
+    {
+        return JsonSerializer.Serialize(value, _settings);
+    }
 
-        public object DeserializeBinary(byte[] value)
-            => Deserialize(Encoding.UTF8.GetString(value));
+    public byte[] SerializeBinary<T>(T value)
+    {
+        return Encoding.UTF8.GetBytes(Serialize(value));
+    }
 
-        public string Serialize<T>(T value)
-            => JsonConvert.SerializeObject(value, _settings);
-
-        public string Serialize(object value)
-            => JsonConvert.SerializeObject(value, _settings);
-
-        public byte[] SerializeBinary<T>(T value)
-            => Encoding.UTF8.GetBytes(Serialize(value));
-
-        public byte[] SerializeBinary(object value)
-            => Encoding.UTF8.GetBytes(Serialize(value));
+    public byte[] SerializeBinary(object value)
+    {
+        return Encoding.UTF8.GetBytes(Serialize(value));
     }
 }

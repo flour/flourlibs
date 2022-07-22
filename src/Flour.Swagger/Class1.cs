@@ -1,8 +1,5 @@
-﻿using System;
+﻿namespace Flour.Swagger;
 
-namespace Flour.Swagger
+public class Class1
 {
-    public class Class1
-    {
-    }
 }

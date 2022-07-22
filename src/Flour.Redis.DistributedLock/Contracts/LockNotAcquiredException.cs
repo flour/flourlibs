@@ -1,11 +1,10 @@
-﻿using System;
+﻿namespace Flour.Redis.DistributedLock.Contracts;
 
-namespace Flour.Redis.DistributedLock.Contracts
+[Serializable]
+public class LockNotAcquiredException : Exception
 {
-    [Serializable]
-    public class LockNotAcquiredException : Exception
+    public LockNotAcquiredException(string message)
+        : base(message)
     {
-        public LockNotAcquiredException(string message)
-            : base(message) { }
     }
 }

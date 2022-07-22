@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Flour.CQRS;
 
-namespace Flour.CQRS
+public interface IEventHandler<in T> where T : class, IEvent
 {
-    public interface IEventHandler<in T> where T : class, IEvent
-    {
-        Task Handle(T anEvent);
-    }
+    Task Handle(T anEvent);
 }

@@ -1,23 +1,22 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Flour.IOBox
+namespace Flour.IOBox;
+
+public interface IOutboxConfig
 {
-    public interface IOutboxConfig
+    IServiceCollection Services { get; }
+    IOptions<InOutSettings> OutboxSettings { get; }
+}
+
+internal class OutboxConfig : IOutboxConfig
+{
+    public OutboxConfig(IServiceCollection services, IOptions<InOutSettings> settings)
     {
-        IServiceCollection Services { get; }
-        IOptions<InOutSettings> OutboxSettings { get; }
+        Services = services;
+        OutboxSettings = settings;
     }
 
-    internal class OutboxConfig : IOutboxConfig
-    {
-        public IServiceCollection Services { get; }
-        public IOptions<InOutSettings> OutboxSettings { get; }
-
-        public OutboxConfig(IServiceCollection services, IOptions<InOutSettings> settings)
-        {
-            Services = services;
-            OutboxSettings = settings;
-        }
-    }
+    public IServiceCollection Services { get; }
+    public IOptions<InOutSettings> OutboxSettings { get; }
 }

@@ -1,7 +1,6 @@
-﻿namespace Flour.RabbitMQ.Options
+﻿namespace Flour.RabbitMQ.Options;
+
+public class LoggerOptions
 {
-    public class LoggerOptions
-    {
-        public bool Enabled { get; set; }
-    }
+    public bool Enabled { get; set; }
 }

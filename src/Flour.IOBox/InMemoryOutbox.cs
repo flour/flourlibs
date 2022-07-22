@@ -1,115 +1,111 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Flour.IOBox.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Flour.IOBox
+namespace Flour.IOBox;
+
+public class InMemoryOutbox : IOutboxMessageAccessor, IOutboxHandler
 {
-    public class InMemoryOutbox : IOutboxMessageAccessor, IOutboxHandler
+    private readonly ConcurrentDictionary<string, bool> _inboxMessages = new();
+    private readonly ILogger<InMemoryOutbox> _logger;
+    private readonly ConcurrentDictionary<string, OutboxMessage> _outboxMessages = new();
+    private readonly IOptions<InOutSettings> _settings;
+
+    public InMemoryOutbox(
+        IOptions<InOutSettings> settings,
+        ILogger<InMemoryOutbox> logger)
     {
-        private readonly IOptions<InOutSettings> _settings;
-        private readonly ILogger<InMemoryOutbox> _logger;
+        _settings = settings;
+        _logger = logger;
+    }
 
-        private readonly ConcurrentDictionary<string, bool> _inboxMessages = new();
-        private readonly ConcurrentDictionary<string, OutboxMessage> _outboxMessages = new();
+    public bool Enabled => _settings.Value?.Enabled ?? false;
 
-        public bool Enabled => _settings.Value?.Enabled ?? false;
-
-        public InMemoryOutbox(
-            IOptions<InOutSettings> settings,
-            ILogger<InMemoryOutbox> logger)
+    public async Task HandleAsync(string messageId, Func<Task> handler)
+    {
+        if (!Enabled)
         {
-            _settings = settings;
-            _logger = logger;
+            _logger.LogWarning("Outbox is disabled, incoming messages won't be processed");
+            return;
         }
 
-        public Task<IReadOnlyList<OutboxMessage>> GetUnsentAsync()
+        if (string.IsNullOrWhiteSpace(messageId))
+            throw new ArgumentNullException(nameof(messageId), "Processing message id cannot be empty");
+
+        if (_inboxMessages.ContainsKey(messageId))
         {
-            return Task.FromResult<IReadOnlyList<OutboxMessage>>(
-                _outboxMessages.Values.Where(m => m.ProcessedAt is null).ToList());
+            _logger.LogTrace($"Message {messageId} was already processed");
+            return;
         }
 
-        public Task ProcessAsync(OutboxMessage message)
-            => ProcessAsync(new[] {message});
+        _logger.LogTrace($"Processing a message {messageId}");
+        await handler().ConfigureAwait(false);
 
-        public Task ProcessAsync(IEnumerable<OutboxMessage> outboxMessages)
+        if (!_inboxMessages.TryAdd(messageId, true))
         {
-            foreach (var message in outboxMessages)
-                message.ProcessedAt = DateTime.UtcNow;
+            _logger.LogError($"There was an error when processing a message with id: '{messageId}'.");
+            return;
+        }
 
-            foreach (var (id, message) in _outboxMessages)
-            {
-                if (message.ProcessedAt.HasValue)
-                    continue;
+        _logger.LogTrace($"Message {messageId} was processed");
+    }
 
-                _outboxMessages.TryRemove(id, out _);
-                _inboxMessages.TryRemove(message.OutboxId, out _);
-            }
-
+    public Task SendAsync<T>(
+        T message,
+        string outboxId = null,
+        string correlationId = null,
+        string messageId = null,
+        string messageContext = null,
+        IDictionary<string, object> headers = null) where T : class
+    {
+        if (!Enabled)
+        {
+            _logger.LogWarning("Outbox is disabled, messages won't be saved into the storage.");
             return Task.CompletedTask;
         }
 
-        public async Task HandleAsync(string messageId, Func<Task> handler)
+        var outboxMessage = new OutboxMessage
         {
-            if (!Enabled)
-            {
-                _logger.LogWarning("Outbox is disabled, incoming messages won't be processed");
-                return;
-            }
+            Id = string.IsNullOrWhiteSpace(messageId) ? Guid.NewGuid().ToString("N") : messageId,
+            OutboxId = outboxId,
+            CorrelationId = correlationId,
+            Headers = (Dictionary<string, object>)headers,
+            Message = message,
+            Context = messageContext,
+            MessageType = message?.GetType().AssemblyQualifiedName,
+            SentAt = DateTime.UtcNow
+        };
+        _outboxMessages.TryAdd(outboxMessage.Id, outboxMessage);
 
-            if (string.IsNullOrWhiteSpace(messageId))
-                throw new ArgumentNullException(nameof(messageId), "Processing message id cannot be empty");
+        return Task.CompletedTask;
+    }
 
-            if (_inboxMessages.ContainsKey(messageId))
-            {
-                _logger.LogTrace($"Message {messageId} was already processed");
-                return;
-            }
+    public Task<IReadOnlyList<OutboxMessage>> GetUnsentAsync()
+    {
+        return Task.FromResult<IReadOnlyList<OutboxMessage>>(
+            _outboxMessages.Values.Where(m => m.ProcessedAt is null).ToList());
+    }
 
-            _logger.LogTrace($"Processing a message {messageId}");
-            await handler().ConfigureAwait(false);
+    public Task ProcessAsync(OutboxMessage message)
+    {
+        return ProcessAsync(new[] { message });
+    }
 
-            if (!_inboxMessages.TryAdd(messageId, true))
-            {
-                _logger.LogError($"There was an error when processing a message with id: '{messageId}'.");
-                return;
-            }
+    public Task ProcessAsync(IEnumerable<OutboxMessage> outboxMessages)
+    {
+        foreach (var message in outboxMessages)
+            message.ProcessedAt = DateTime.UtcNow;
 
-            _logger.LogTrace($"Message {messageId} was processed");
+        foreach (var (id, message) in _outboxMessages)
+        {
+            if (message.ProcessedAt.HasValue)
+                continue;
+
+            _outboxMessages.TryRemove(id, out _);
+            _inboxMessages.TryRemove(message.OutboxId, out _);
         }
 
-        public Task SendAsync<T>(
-            T message,
-            string outboxId = null,
-            string correlationId = null,
-            string messageId = null,
-            string messageContext = null,
-            IDictionary<string, object> headers = null) where T : class
-        {
-            if (!Enabled)
-            {
-                _logger.LogWarning("Outbox is disabled, messages won't be saved into the storage.");
-                return Task.CompletedTask;
-            }
-
-            var outboxMessage = new OutboxMessage
-            {
-                Id = string.IsNullOrWhiteSpace(messageId) ? Guid.NewGuid().ToString("N") : messageId,
-                OutboxId = outboxId,
-                CorrelationId = correlationId,
-                Headers = (Dictionary<string, object>) headers,
-                Message = message,
-                Context = messageContext,
-                MessageType = message?.GetType().AssemblyQualifiedName,
-                SentAt = DateTime.UtcNow
-            };
-            _outboxMessages.TryAdd(outboxMessage.Id, outboxMessage);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

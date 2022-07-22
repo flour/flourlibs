@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Flour.CQRS</Description>
-    <Authors>Vladislav Dikhnich</Authors>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>Latest</LangVersion>
-    <AssemblyName>Flour.CQRS</AssemblyName>
-    <Title>Flour.CQRS</Title>
-    <PackageId>Flour.CQRS</PackageId>
-    <PackageTags>Flour.CQRS</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>Flour.CQRS</Description>
+        <Authors>Vladislav Dikhnich</Authors>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>Latest</LangVersion>
+        <AssemblyName>Flour.CQRS</AssemblyName>
+        <Title>Flour.CQRS</Title>
+        <PackageId>Flour.CQRS</PackageId>
+        <PackageTags>Flour.CQRS</PackageTags>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Scrutor" Version="3.3.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="Scrutor" Version="4.2.0" />
+    </ItemGroup>
 
 </Project>

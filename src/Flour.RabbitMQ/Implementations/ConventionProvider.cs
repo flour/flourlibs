@@ -1,75 +1,77 @@
-﻿using Flour.BrokersContracts;
+﻿using System.Reflection;
+using Flour.BrokersContracts;
 using Flour.RabbitMQ.Options;
-using System;
-using System.Reflection;
 
-namespace Flour.RabbitMQ.Implementations
+namespace Flour.RabbitMQ.Implementations;
+
+internal class ConventionProvider : IConventionProvider
 {
-    internal class ConventionProvider : IConventionProvider
+    private readonly IConventionsStore _conventionsStore;
+    private readonly string _queueTemplate;
+
+    public ConventionProvider(IConventionsStore conventionsStore, RabbitMqOptions options)
     {
-        private readonly string _queueTemplate;
-        private readonly IConventionsStore _conventionsStore;
+        _conventionsStore = conventionsStore;
+        _queueTemplate = string.IsNullOrWhiteSpace(options.Queue.QueueTemplate)
+            ? QueueOptions.DefaultTemplate
+            : options.Queue.QueueTemplate;
+    }
 
-        public ConventionProvider(IConventionsStore conventionsStore, RabbitMqOptions options)
-        {
-            _conventionsStore = conventionsStore;
-            _queueTemplate = string.IsNullOrWhiteSpace(options.Queue.QueueTemplate)
-                ? QueueOptions.DefaultTemplate
-                : options.Queue.QueueTemplate;
-        }
+    public IMessageConvention Get<T>()
+    {
+        return Get(typeof(T));
+    }
 
-        public IMessageConvention Get<T>()
-            => Get(typeof(T));
-
-        public IMessageConvention Get(Type type)
-        {
-            var convention = _conventionsStore.Get(type);
-            if (convention is not null)
-                return convention;
-
-            convention = new MessageConvention(type, GetRoute(type), GetExchange(type), GetQueue(type));
-            _conventionsStore.Add(type, convention);
+    public IMessageConvention Get(Type type)
+    {
+        var convention = _conventionsStore.Get(type);
+        if (convention is not null)
             return convention;
-        }
 
-        public string GetExchange(Type type)
-        {
-            var attribute = GetMessagingAttribute(type);
-            return attribute?.Route ?? type.Name;
-        }
+        convention = new MessageConvention(type, GetRoute(type), GetExchange(type), GetQueue(type));
+        _conventionsStore.Add(type, convention);
+        return convention;
+    }
 
-        public string GetQueue(Type type)
-        {
-            var attribute = GetMessagingAttribute(type);
-            var assembly = type.Assembly.GetName().Name;
-            var exchange = GetExchange(type);
-            var message = type.Name;
+    public string GetExchange(Type type)
+    {
+        var attribute = GetMessagingAttribute(type);
+        return attribute?.Route ?? type.Name;
+    }
 
-            return attribute?.Queue
-                   ?? _queueTemplate.Replace($"%{nameof(assembly)}%", assembly)
-                       .Replace($"%{nameof(exchange)}%", exchange)
-                       .Replace($"%{nameof(message)}%", message);
-        }
+    public string GetQueue(Type type)
+    {
+        var attribute = GetMessagingAttribute(type);
+        var assembly = type.Assembly.GetName().Name;
+        var exchange = GetExchange(type);
+        var message = type.Name;
 
-        public string GetRoute(Type type)
-        {
-            var attribute = GetMessagingAttribute(type);
-            return attribute?.Route ?? type.Name;
-        }
+        return attribute?.Queue
+               ?? _queueTemplate.Replace($"%{nameof(assembly)}%", assembly)
+                   .Replace($"%{nameof(exchange)}%", exchange)
+                   .Replace($"%{nameof(message)}%", message);
+    }
 
-        private static MessagingAttribute GetMessagingAttribute(Type type)
-            => type.GetCustomAttribute<MessagingAttribute>();
+    public string GetRoute(Type type)
+    {
+        var attribute = GetMessagingAttribute(type);
+        return attribute?.Route ?? type.Name;
+    }
 
-        private IMessageConvention BuildConvention(Type type)
-        {
-            var convention = new MessageConvention(
-                type,
-                GetRoute(type),
-                GetExchange(type),
-                GetQueue(type));
+    private static MessagingAttribute GetMessagingAttribute(Type type)
+    {
+        return type.GetCustomAttribute<MessagingAttribute>();
+    }
 
-            _conventionsStore.Add(type, convention);
-            return convention;
-        }
+    private IMessageConvention BuildConvention(Type type)
+    {
+        var convention = new MessageConvention(
+            type,
+            GetRoute(type),
+            GetExchange(type),
+            GetQueue(type));
+
+        _conventionsStore.Add(type, convention);
+        return convention;
     }
 }

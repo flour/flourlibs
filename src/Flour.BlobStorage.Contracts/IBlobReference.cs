@@ -1,7 +1,6 @@
-﻿namespace Flour.BlobStorage.Contracts
+﻿namespace Flour.BlobStorage.Contracts;
+
+public interface IBlobReference
 {
-    public interface IBlobReference
-    {
-        string Id { get; }
-    }
+    string Id { get; }
 }

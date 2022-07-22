@@ -1,7 +1,5 @@
-﻿namespace Flour.CQRS
-{
-    public interface IEvent
-    {
+﻿namespace Flour.CQRS;
 
-    }
+public interface IEvent
+{
 }

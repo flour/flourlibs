@@ -1,21 +1,23 @@
 ﻿using Flour.BrokersContracts;
-using System.Threading.Tasks;
 
-namespace Flour.CQRS.Brokers
+namespace Flour.CQRS.Brokers;
+
+internal class ServiceBusMessageDispatcher : ICommandDispatcher, IEventDispatcher
 {
-    internal class ServiceBusMessageDispatcher : ICommandDispatcher, IEventDispatcher
+    private readonly IBrokerPublisher _brokerPublisher;
+
+    public ServiceBusMessageDispatcher(IBrokerPublisher brokerPublisher)
     {
-        private readonly IBrokerPublisher _brokerPublisher;
+        _brokerPublisher = brokerPublisher;
+    }
 
-        public ServiceBusMessageDispatcher(IBrokerPublisher brokerPublisher)
-        {
-            _brokerPublisher = brokerPublisher;
-        }
+    public Task Execute<T>(T command) where T : class, ICommand
+    {
+        return _brokerPublisher.Publish(command);
+    }
 
-        public Task Execute<T>(T command) where T : class, ICommand
-            => _brokerPublisher.Publish(command);
-
-        public Task Send<T>(T anEvent) where T : class, IEvent
-            => _brokerPublisher.Publish(anEvent);
+    public Task Send<T>(T anEvent) where T : class, IEvent
+    {
+        return _brokerPublisher.Publish(anEvent);
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace Flour.Redis.Abstractions
+namespace Flour.Redis.Abstractions;
+
+public interface IConnectionMultiplexerFactory
 {
-    public interface IConnectionMultiplexerFactory
-    {
-        Task<IConnectionMultiplexer> Create();
-    }
+    Task<IConnectionMultiplexer> Create();
 }

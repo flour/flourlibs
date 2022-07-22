@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace Flour.Redis
+namespace Flour.Redis;
+
+public interface IRedisConnectionMultiplexer
 {
-    public interface IRedisConnectionMultiplexer
-    {
-        Task<IConnectionMultiplexer> GetMultiplexerInstance();
-        Task<IDatabase> GetDatabase();
-        Task<IDatabase> GetDatabase(int index);
-    }
+    Task<IConnectionMultiplexer> GetMultiplexerInstance();
+    Task<IDatabase> GetDatabase();
+    Task<IDatabase> GetDatabase(int index);
 }

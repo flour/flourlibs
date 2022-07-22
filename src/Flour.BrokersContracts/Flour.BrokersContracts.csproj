@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Flour.BrokersContracts</Description>
-    <Authors>Vladislav Dikhnich</Authors>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>Latest</LangVersion>
-    <AssemblyName>Flour.BrokersContracts</AssemblyName>
-    <Title>Flour.BrokersContracts</Title>
-    <PackageId>Flour.BrokersContracts</PackageId>
-    <PackageTags>Flour.BrokersContracts</PackageTags>
-    <VersionDependsOn>$(VersionDependsOn);GetNuPkgVersion</VersionDependsOn>
-  </PropertyGroup>
-
-  <Target Name="GetNuPkgVersion">
     <PropertyGroup>
-      <Version>$(NuGetPackageVersion)</Version>
+        <Description>Flour.BrokersContracts</Description>
+        <Authors>Vladislav Dikhnich</Authors>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>Latest</LangVersion>
+        <AssemblyName>Flour.BrokersContracts</AssemblyName>
+        <Title>Flour.BrokersContracts</Title>
+        <PackageId>Flour.BrokersContracts</PackageId>
+        <PackageTags>Flour.BrokersContracts</PackageTags>
+        <VersionDependsOn>$(VersionDependsOn);GetNuPkgVersion</VersionDependsOn>
     </PropertyGroup>
-  </Target>
+
+    <Target Name="GetNuPkgVersion">
+        <PropertyGroup>
+            <Version>$(NuGetPackageVersion)</Version>
+        </PropertyGroup>
+    </Target>
 
 </Project>

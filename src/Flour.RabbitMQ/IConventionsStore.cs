@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Flour.RabbitMQ;
 
-namespace Flour.RabbitMQ
+public interface IConventionsStore
 {
-    public interface IConventionsStore
-    {
-        void Add<T>(IMessageConvention convention);
-        void Add(Type type, IMessageConvention convention);
-        IMessageConvention Get<T>();
-        IMessageConvention Get(Type type);
-        IEnumerable<IMessageConvention> GetAll();
-    }
+    void Add<T>(IMessageConvention convention);
+    void Add(Type type, IMessageConvention convention);
+    IMessageConvention Get<T>();
+    IMessageConvention Get(Type type);
+    IEnumerable<IMessageConvention> GetAll();
 }

@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Flour.RabbitMQ;
 
-namespace Flour.RabbitMQ
+public interface IMessageConvention
 {
-    public interface IMessageConvention
-    {
-        Type MessageType { get; }
-        string Queue { get; }
-        string Route { get; }
-        string Exchange { get; }
-    }
+    Type MessageType { get; }
+    string Queue { get; }
+    string Route { get; }
+    string Exchange { get; }
 }

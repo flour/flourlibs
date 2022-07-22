@@ -1,49 +1,47 @@
-﻿using System.Collections.Generic;
-using Serilog;
+﻿using Serilog;
 
-namespace Flour.Logging.Options
+namespace Flour.Logging.Options;
+
+public enum FilterType
 {
-    public enum FilterType
+    Exclude,
+    IncludeOnly
+}
+
+public class Filter
+{
+    public FilterType Type { get; set; }
+    public string Expression { get; set; }
+}
+
+public class FilteringOptions : ILoggerOptions
+{
+    public List<Filter> Filters { get; set; } = new();
+    public bool Enabled { get; set; }
+
+    public void Configure(LoggerConfiguration configuration)
     {
-        Exclude,
-        IncludeOnly
+        if (!Enabled)
+            return;
+
+        Filters.ForEach(f => ConfigureFilter(configuration, f));
     }
 
-    public class Filter
+    private void ConfigureFilter(LoggerConfiguration configuration, Filter filter)
     {
-        public FilterType Type { get; set; }
-        public string Expression { get; set; }
-    }
+        if (configuration is null || filter is null || string.IsNullOrWhiteSpace(filter.Expression))
+            return;
 
-    public class FilteringOptions : ILoggerOptions
-    {
-        public bool Enabled { get; set; }
-        public List<Filter> Filters { get; set; } = new();
-
-        public void Configure(LoggerConfiguration configuration)
+        switch (filter.Type)
         {
-            if (!Enabled)
+            case FilterType.Exclude:
+                configuration.Filter.ByExcluding(filter.Expression);
+                break;
+            case FilterType.IncludeOnly:
+                configuration.Filter.ByIncludingOnly(filter.Expression);
+                break;
+            default:
                 return;
-
-            Filters.ForEach(f => ConfigureFilter(configuration, f));
-        }
-
-        private void ConfigureFilter(LoggerConfiguration configuration, Filter filter)
-        {
-            if (configuration is null || filter is null || string.IsNullOrWhiteSpace(filter.Expression))
-                return;
-
-            switch (filter.Type)
-            {
-                case FilterType.Exclude:
-                    configuration.Filter.ByExcluding(filter.Expression);
-                    break;
-                case FilterType.IncludeOnly:
-                    configuration.Filter.ByIncludingOnly(filter.Expression);
-                    break;
-                default:
-                    return;
-            }
         }
     }
 }

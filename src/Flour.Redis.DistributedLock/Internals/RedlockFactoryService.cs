@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using RedLockNet;
+﻿using RedLockNet;
 using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 
-namespace Flour.Redis.DistributedLock.Internals
+namespace Flour.Redis.DistributedLock.Internals;
+
+internal class RedlockFactoryService : IRedlockFactoryService
 {
-    internal class RedlockFactoryService : IRedlockFactoryService
+    public Task<IDistributedLockFactory> Create(IEnumerable<RedLockMultiplexer> endpoints)
     {
-        public Task<IDistributedLockFactory> Create(IEnumerable<RedLockMultiplexer> endpoints)
-        {
-            return Task.FromResult<IDistributedLockFactory>(RedLockFactory.Create(endpoints.ToList()));
-        }
+        return Task.FromResult<IDistributedLockFactory>(RedLockFactory.Create(endpoints.ToList()));
     }
 }

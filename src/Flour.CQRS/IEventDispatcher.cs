@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Flour.CQRS;
 
-namespace Flour.CQRS
+public interface IEventDispatcher
 {
-    public interface IEventDispatcher
-    {
-        Task Send<T>(T anEvent) where T : class, IEvent;
-    }
+    Task Send<T>(T anEvent) where T : class, IEvent;
 }

@@ -1,8 +1,9 @@
-﻿namespace Flour.CQRS
-{
-    public interface IQuery
-    { }
+﻿namespace Flour.CQRS;
 
-    public interface IQuery<T> : IQuery
-    { }
+public interface IQuery
+{
+}
+
+public interface IQuery<T> : IQuery
+{
 }

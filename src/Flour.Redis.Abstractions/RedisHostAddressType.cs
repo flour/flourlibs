@@ -1,9 +1,8 @@
-﻿namespace Flour.Redis.Abstractions
+﻿namespace Flour.Redis.Abstractions;
+
+public enum RedisHostAddressType
 {
-    public enum RedisHostAddressType
-    {
-        Unspecified,
-        IPv4,
-        IPv6
-    }
+    Unspecified,
+    IPv4,
+    IPv6
 }

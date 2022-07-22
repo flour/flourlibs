@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace Flour.Redis.Abstractions
+namespace Flour.Redis.Abstractions;
+
+public interface IConnectionMultiplexerService
 {
-    public interface IConnectionMultiplexerService
-    {
-        Task<IConnectionMultiplexer> GetConnection(ConfigurationOptions configuration);
-        Task<IConnectionMultiplexer> GetConnection(string serviceName, params string[] hostAddresses);
-    }
+    Task<IConnectionMultiplexer> GetConnection(ConfigurationOptions configuration);
+    Task<IConnectionMultiplexer> GetConnection(string serviceName, params string[] hostAddresses);
 }

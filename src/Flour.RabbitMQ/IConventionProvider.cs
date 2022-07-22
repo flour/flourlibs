@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace Flour.RabbitMQ;
 
-namespace Flour.RabbitMQ
+public interface IConventionProvider
 {
-    public interface IConventionProvider
-    {
-        string GetRoute(Type type);
-        string GetExchange(Type type);
-        string GetQueue(Type type);
-        IMessageConvention Get<T>();
-        IMessageConvention Get(Type type);
-    }
+    string GetRoute(Type type);
+    string GetExchange(Type type);
+    string GetQueue(Type type);
+    IMessageConvention Get<T>();
+    IMessageConvention Get(Type type);
 }

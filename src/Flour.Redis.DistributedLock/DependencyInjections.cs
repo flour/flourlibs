@@ -4,26 +4,25 @@ using Flour.Redis.DistributedLock.Internals;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Flour.Redis.DistributedLock
+namespace Flour.Redis.DistributedLock;
+
+public static class DependencyInjections
 {
-    public static class DependencyInjections
+    private const string DefaultSection = "redisLock";
+
+    public static IServiceCollection AddRedisDistributedLocking(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string sectionName = DefaultSection)
     {
-        private const string DefaultSection = "redisLock"; 
-        
-        public static IServiceCollection AddRedisDistributedLocking(
-            this IServiceCollection services,
-            IConfiguration configuration,
-            string sectionName = DefaultSection)
-        {
-            return services
-                .AddRedis(configuration)
-                .Configure<RedisDistributedLockSettings>(options =>
-                    configuration.GetSection(sectionName)?.Bind(options))
-                .AddTransient<IRedLockConnectionFactory, RedLockConnectionFactory>()
-                .AddTransient<IDistributedLockAcquirer, RedisDistributedLockAcquirer>()
-                .AddTransient<IDistributedLockChecker, RedisDistributedLockChecker>()
-                .AddTransient<IRedlockFactoryService, RedlockFactoryService>()
-                .AddSingleton(sp => sp.GetRequiredService<IRedLockConnectionFactory>().Create().GetAwaiter().GetResult());
-        }
+        return services
+            .AddRedis(configuration)
+            .Configure<RedisDistributedLockSettings>(options =>
+                configuration.GetSection(sectionName)?.Bind(options))
+            .AddTransient<IRedLockConnectionFactory, RedLockConnectionFactory>()
+            .AddTransient<IDistributedLockAcquirer, RedisDistributedLockAcquirer>()
+            .AddTransient<IDistributedLockChecker, RedisDistributedLockChecker>()
+            .AddTransient<IRedlockFactoryService, RedlockFactoryService>()
+            .AddSingleton(sp => sp.GetRequiredService<IRedLockConnectionFactory>().Create().GetAwaiter().GetResult());
     }
 }

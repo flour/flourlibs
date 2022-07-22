@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Flour.CQRS;
 
-namespace Flour.CQRS
+public interface ICommandHandler<in T> where T : class, ICommand
 {
-    public interface ICommandHandler<in T> where T : class, ICommand
-    {
-        Task Handle(T command);
-    }
+    Task Handle(T command);
 }

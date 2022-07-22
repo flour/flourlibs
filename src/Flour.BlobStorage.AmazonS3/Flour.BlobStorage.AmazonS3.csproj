@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="AWSSDK.S3" Version="3.7.7.5" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.9.28" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Flour.BlobStorage.Contracts\Flour.BlobStorage.Contracts.csproj" />
+        <ProjectReference Include="..\Flour.BlobStorage.Contracts\Flour.BlobStorage.Contracts.csproj" />
     </ItemGroup>
 </Project>
