@@ -75,6 +75,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Otel", "src\Flour.Ote
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.Grpc", "src\Flour.Grpc\Flour.Grpc.csproj", "{216B8109-78E6-413F-9A28-007B736E1BA9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "serviceBus", "serviceBus", "{84293632-CD07-47DE-A14E-AC1288738E8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.ServiceBus.Abstractions", "src\Flour.ServiceBus.Abstractions\Flour.ServiceBus.Abstractions.csproj", "{F9BADE5A-178A-4CD3-BB88-F98244FB4644}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.ServiceBus.MassTransit.RabbitMq", "src\Flour.ServiceBus.MassTransit.RabbitMq\Flour.ServiceBus.MassTransit.RabbitMq.csproj", "{DD3359FA-B0C5-4978-A272-56F420665C37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.ServiceBus.MassTransit.RabbitMq.Decorators", "src\Flour.ServiceBus.MassTransit.RabbitMq.Decorators\Flour.ServiceBus.MassTransit.RabbitMq.Decorators.csproj", "{9B89A939-6418-47DD-B608-2BE2C26BC9A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flour.ServiceBus.MassTransit.RabbitMq.DependencyInjection", "src\Flour.ServiceBus.MassTransit.RabbitMq.DependencyInjection\Flour.ServiceBus.MassTransit.RabbitMq.DependencyInjection.csproj", "{D379EADB-1C68-4A99-9F9E-A4CC568818C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +203,22 @@ Global
 		{216B8109-78E6-413F-9A28-007B736E1BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{216B8109-78E6-413F-9A28-007B736E1BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{216B8109-78E6-413F-9A28-007B736E1BA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9BADE5A-178A-4CD3-BB88-F98244FB4644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BADE5A-178A-4CD3-BB88-F98244FB4644}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BADE5A-178A-4CD3-BB88-F98244FB4644}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BADE5A-178A-4CD3-BB88-F98244FB4644}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3359FA-B0C5-4978-A272-56F420665C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3359FA-B0C5-4978-A272-56F420665C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3359FA-B0C5-4978-A272-56F420665C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3359FA-B0C5-4978-A272-56F420665C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B89A939-6418-47DD-B608-2BE2C26BC9A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B89A939-6418-47DD-B608-2BE2C26BC9A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B89A939-6418-47DD-B608-2BE2C26BC9A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B89A939-6418-47DD-B608-2BE2C26BC9A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D379EADB-1C68-4A99-9F9E-A4CC568818C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D379EADB-1C68-4A99-9F9E-A4CC568818C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D379EADB-1C68-4A99-9F9E-A4CC568818C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D379EADB-1C68-4A99-9F9E-A4CC568818C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +253,11 @@ Global
 		{04C85479-DE2C-4B7F-BFFC-41F77D48AA3D} = {42C9FC42-2B1A-418D-ADB5-E50904767E0D}
 		{7230755D-84C5-4270-B718-DEE56F321FBA} = {50258B56-3B1B-4393-9402-B0F69CDC14D5}
 		{216B8109-78E6-413F-9A28-007B736E1BA9} = {50258B56-3B1B-4393-9402-B0F69CDC14D5}
+		{84293632-CD07-47DE-A14E-AC1288738E8F} = {50258B56-3B1B-4393-9402-B0F69CDC14D5}
+		{F9BADE5A-178A-4CD3-BB88-F98244FB4644} = {84293632-CD07-47DE-A14E-AC1288738E8F}
+		{DD3359FA-B0C5-4978-A272-56F420665C37} = {84293632-CD07-47DE-A14E-AC1288738E8F}
+		{9B89A939-6418-47DD-B608-2BE2C26BC9A3} = {84293632-CD07-47DE-A14E-AC1288738E8F}
+		{D379EADB-1C68-4A99-9F9E-A4CC568818C7} = {84293632-CD07-47DE-A14E-AC1288738E8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E62E62B-D512-4595-88CC-DCD54B23A1E8}

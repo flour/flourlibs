@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Flour.Redis.Abstractions\Flour.Redis.Abstractions.csproj" />
+      <ProjectReference Include="..\Flour.ServiceBus.MassTransit.RabbitMq\Flour.ServiceBus.MassTransit.RabbitMq.csproj" />
+    </ItemGroup>
+
+</Project>
