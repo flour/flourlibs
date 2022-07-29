@@ -1,5 +1,4 @@
-﻿using Flour.Logging.Enrichers;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Configuration;
