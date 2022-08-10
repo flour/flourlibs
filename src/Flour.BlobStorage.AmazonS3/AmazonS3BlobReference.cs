@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Flour.BlobStorage.Contracts;
 
 namespace Flour.BlobStorage.AmazonS3;
@@ -7,6 +8,13 @@ namespace Flour.BlobStorage.AmazonS3;
 public class AmazonS3BlobReference : IBlobReference
 {
     private readonly BucketKey _bucketKeyReference;
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true, 
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never
+    };
 
     public AmazonS3BlobReference(string bucket, string key)
     {
@@ -34,7 +42,7 @@ public class AmazonS3BlobReference : IBlobReference
 
     private string ToId()
     {
-        var serializedJson = JsonSerializer.Serialize(_bucketKeyReference);
+        var serializedJson = JsonSerializer.Serialize(_bucketKeyReference, JsonOptions);
         var bytes = Encoding.UTF8.GetBytes(serializedJson);
         return Convert.ToBase64String(bytes, Base64FormattingOptions.None);
     }
@@ -43,10 +51,11 @@ public class AmazonS3BlobReference : IBlobReference
     {
         var bytes = Convert.FromBase64String(id);
         var serializedJson = Encoding.UTF8.GetString(bytes);
-        return JsonSerializer.Deserialize<BucketKey>(serializedJson);
+        var test = JsonSerializer.Deserialize<BucketKey>(serializedJson, JsonOptions);
+        return test;
     }
 
-    private class BucketKey
+    public class BucketKey
     {
         public BucketKey()
         {
@@ -58,7 +67,7 @@ public class AmazonS3BlobReference : IBlobReference
             Key = key.ToLowerInvariant();
         }
 
-        public string Bucket { get; }
-        public string Key { get; }
+        [JsonPropertyName("Bucket")] public string Bucket { get; init; }
+        [JsonPropertyName("Key")] public string Key { get; init; }
     }
 }
