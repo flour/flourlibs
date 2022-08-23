@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Flour.Vault.Internals;

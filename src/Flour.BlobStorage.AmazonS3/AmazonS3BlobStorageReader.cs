@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Flour.BlobStorage.AmazonS3;
 
-internal class AmazonS3BlobStorageReader : IBlobStorageReader<AmazonS3BlobReference>
+internal class AmazonS3BlobStorageReader : IBlobStorageReader<BucketKeyReference>
 {
     private readonly IAmazonS3 _client;
     private readonly ILogger<AmazonS3BlobStorageReader> _logger;
@@ -18,7 +18,7 @@ internal class AmazonS3BlobStorageReader : IBlobStorageReader<AmazonS3BlobRefere
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Blob> Get(AmazonS3BlobReference reference)
+    public async Task<Blob> Get(BucketKeyReference reference)
     {
         if (reference == null)
             throw new ArgumentNullException(nameof(reference));
@@ -54,7 +54,7 @@ internal class AmazonS3BlobStorageReader : IBlobStorageReader<AmazonS3BlobRefere
         }
     }
 
-    public async Task<IDictionary<string, string>> GetMetadata(AmazonS3BlobReference reference)
+    public async Task<IDictionary<string, string>> GetMetadata(BucketKeyReference reference)
     {
         if (reference == null)
             throw new ArgumentNullException(nameof(reference));
@@ -79,7 +79,7 @@ internal class AmazonS3BlobStorageReader : IBlobStorageReader<AmazonS3BlobRefere
         }
     }
 
-    public async Task<bool> Exists(AmazonS3BlobReference reference)
+    public async Task<bool> Exists(BucketKeyReference reference)
     {
         if (reference == null)
             throw new ArgumentNullException(nameof(reference));

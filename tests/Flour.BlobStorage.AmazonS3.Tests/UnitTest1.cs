@@ -1,3 +1,4 @@
+using Flour.BlobStorage.Contracts;
 using FluentAssertions;
 using Xunit;
 
@@ -9,8 +10,8 @@ public class UnitTest1
     [InlineData("bucket", "key")]
     public void When_Then(string bucket, string key)
     {
-        var id = new AmazonS3BlobReference(bucket, key).Id;
-        var test = new AmazonS3BlobReference(id);
+        var id = new BucketKeyReference(bucket, key).Id;
+        var test = new BucketKeyReference(id);
         test.Bucket.Should().Be(bucket);
         test.Key.Should().Be(key);
     }

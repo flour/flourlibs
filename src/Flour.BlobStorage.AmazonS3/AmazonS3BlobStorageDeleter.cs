@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Flour.BlobStorage.AmazonS3;
 
-internal class AmazonS3BlobStorageDeleter : IBlobStorageDeleter<AmazonS3BlobContainer, AmazonS3BlobReference>
+internal class AmazonS3BlobStorageDeleter : IBlobStorageDeleter<BlobContainer, BucketKeyReference>
 {
     private readonly IAmazonS3 _client;
     private readonly ILogger<AmazonS3BlobStorageDeleter> _logger;
@@ -16,7 +16,7 @@ internal class AmazonS3BlobStorageDeleter : IBlobStorageDeleter<AmazonS3BlobCont
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task EmptyContainer(AmazonS3BlobContainer container)
+    public async Task EmptyContainer(BlobContainer container)
     {
         var bucket = container?.Id;
         if (string.IsNullOrWhiteSpace(bucket))
@@ -48,7 +48,7 @@ internal class AmazonS3BlobStorageDeleter : IBlobStorageDeleter<AmazonS3BlobCont
         }
     }
 
-    public async Task DeleteObject(AmazonS3BlobReference reference)
+    public async Task DeleteObject(BucketKeyReference reference)
     {
         if (reference == null)
             throw new ArgumentNullException(nameof(reference));
@@ -72,7 +72,7 @@ internal class AmazonS3BlobStorageDeleter : IBlobStorageDeleter<AmazonS3BlobCont
         }
     }
 
-    public async Task DeleteContainer(AmazonS3BlobContainer container)
+    public async Task DeleteContainer(BlobContainer container)
     {
         await EmptyContainer(container);
         try

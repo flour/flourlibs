@@ -17,12 +17,11 @@ public static class TypesRegistration
         services
             .Configure<AmazonS3Settings>(options => configuration.GetSection(sectionName)?.Bind(options))
             .AddTransient<IAmazonS3ClientFactory, AmazonS3ClientFactory>()
-            .AddSingleton(s => s.GetRequiredService<IAmazonS3ClientFactory>().Create())
-            .AddSingleton<ITransferUtility, TransferUtility>()
-            .AddTransient<IBlobStorageWriter<AmazonS3BlobReference>, AmazonS3BlobStorageWriter>()
-            .AddTransient<IBlobStorageReader<AmazonS3BlobReference>, AmazonS3BlobStorageReader>()
-            .AddTransient<IBlobStorageDeleter<AmazonS3BlobContainer, AmazonS3BlobReference>,
-                AmazonS3BlobStorageDeleter>();
+            .AddScoped(s => s.GetRequiredService<IAmazonS3ClientFactory>().Create())
+            .AddScoped<ITransferUtility, TransferUtility>()
+            .AddTransient<IBlobStorageWriter<BucketKeyReference>, AmazonS3BlobStorageWriter>()
+            .AddTransient<IBlobStorageReader<BucketKeyReference>, AmazonS3BlobStorageReader>()
+            .AddTransient<IBlobStorageDeleter<BlobContainer, BucketKeyReference>, AmazonS3BlobStorageDeleter>();
 
         return services;
     }

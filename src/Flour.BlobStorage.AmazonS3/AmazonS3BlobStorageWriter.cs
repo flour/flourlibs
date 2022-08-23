@@ -5,7 +5,7 @@ using Flour.BlobStorage.Contracts;
 
 namespace Flour.BlobStorage.AmazonS3;
 
-internal class AmazonS3BlobStorageWriter : IBlobStorageWriter<AmazonS3BlobReference>
+internal class AmazonS3BlobStorageWriter : IBlobStorageWriter<BucketKeyReference>
 {
     public const string BucketAlreadyOwnedByYouError = "BucketAlreadyOwnedByYou";
 
@@ -18,7 +18,7 @@ internal class AmazonS3BlobStorageWriter : IBlobStorageWriter<AmazonS3BlobRefere
         _transferUtility = transferUtility ?? throw new ArgumentNullException(nameof(transferUtility));
     }
 
-    public async Task Store(AmazonS3BlobReference reference, Blob data)
+    public async Task Store(BucketKeyReference reference, Blob data)
     {
         if (reference == null)
             throw new ArgumentNullException(nameof(reference));

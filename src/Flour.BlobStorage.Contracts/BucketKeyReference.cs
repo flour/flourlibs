@@ -1,22 +1,35 @@
 ﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Flour.BlobStorage.Contracts;
 
-namespace Flour.BlobStorage.AmazonS3;
+namespace Flour.BlobStorage.Contracts;
 
-public class AmazonS3BlobReference : IBlobReference
+public class BucketKeyReference : IBlobReference
 {
     private readonly BucketKey _bucketKeyReference;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true, 
+        PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.Never
     };
 
-    public AmazonS3BlobReference(string bucket, string key)
+    public string Bucket => _bucketKeyReference.Bucket;
+    public string Key => _bucketKeyReference.Key;
+    public string Path => $"{Bucket}/{Key}";
+
+    public string Id => ToId();
+
+    public BucketKeyReference(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            throw new ArgumentNullException(nameof(id));
+
+        _bucketKeyReference = FromId(id);
+    }
+
+    public BucketKeyReference(string bucket, string key)
     {
         if (string.IsNullOrWhiteSpace(bucket))
             throw new ArgumentNullException(nameof(bucket));
@@ -26,20 +39,7 @@ public class AmazonS3BlobReference : IBlobReference
 
         _bucketKeyReference = new BucketKey(bucket, key);
     }
-
-    public AmazonS3BlobReference(string id)
-    {
-        if (string.IsNullOrWhiteSpace(id))
-            throw new ArgumentNullException(nameof(id));
-
-        _bucketKeyReference = FromId(id);
-    }
-
-    public string Bucket => _bucketKeyReference.Bucket;
-    public string Key => _bucketKeyReference.Key;
-
-    public string Id => ToId();
-
+    
     private string ToId()
     {
         var serializedJson = JsonSerializer.Serialize(_bucketKeyReference, JsonOptions);
@@ -47,12 +47,11 @@ public class AmazonS3BlobReference : IBlobReference
         return Convert.ToBase64String(bytes, Base64FormattingOptions.None);
     }
 
-    private BucketKey FromId(string id)
+    private static BucketKey FromId(string id)
     {
         var bytes = Convert.FromBase64String(id);
         var serializedJson = Encoding.UTF8.GetString(bytes);
-        var test = JsonSerializer.Deserialize<BucketKey>(serializedJson, JsonOptions);
-        return test;
+        return JsonSerializer.Deserialize<BucketKey>(serializedJson, JsonOptions);
     }
 
     public class BucketKey
