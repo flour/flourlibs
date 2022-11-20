@@ -41,22 +41,14 @@ public static class Di
 
         return services.AddOpenTelemetryTracing(builder =>
         {
-            void Enrich(Activity activity, string eventName, object rawObject)
-            {
-                if (!eventName.Equals("OnStartActivity"))
-                    return;
-
-                settings.Enrichers.ForEach(f => activity.AddTag(f.Key, f.Value));
-                if (rawObject is HttpRequest httpRequest && enricher != null)
-                    enricher.Invoke(activity, httpRequest);
-            }
-
             builder
+                .AddSource(settings.ServiceName)
+                .AddHttpClientInstrumentation()
                 .AddAspNetCoreInstrumentation(options =>
                 {
                     options.EnableGrpcAspNetCoreSupport = true;
                     options.RecordException = true;
-                    options.Enrich = Enrich;
+                    options.EnrichWithHttpRequest = enricher;
 
                     if (!settings.Filters.Enabled)
                         return;
@@ -71,6 +63,9 @@ public static class Di
                         if (!context.Request.Path.HasValue ||
                             string.IsNullOrWhiteSpace(context.Request.Path.Value))
                             return false;
+
+                        if (Activity.Current?.Tags.Any(t => settings.Filters.Tags.Contains(t.Key)) ?? false)
+                            return true;
 
                         var result = true;
                         var requestPath = context.Request.Path.Value;
@@ -97,42 +92,85 @@ public static class Di
                         return result;
                     };
                 })
-                .AddHttpClientInstrumentation()
-                .AddGrpcClientInstrumentation(options =>
-                {
-                    options.SuppressDownstreamInstrumentation = true;
-                    options.Enrich = Enrich;
-                })
-                .AddSource(settings.ServiceName)
+                .AddGrpcInstruments(settings)
+                .AddEfCoreInstruments(settings)
+                .AddMassTransitInstruments(settings)
+                .AddRedisInstruments(settings)
                 .SetResourceBuilder(
                     ResourceBuilder.CreateDefault()
                         .AddEnvironmentVariableDetector()
                         .AddAttributes(settings.Attributes)
                         .AddService(settings.ServiceName));
 
-            if (settings.MassTransitEnabled)
-                builder.AddMassTransitInstrumentation();
-
-            if (settings.EfCoreEnabled)
-                builder.AddEntityFrameworkCoreInstrumentation(options =>
-                    options.SetDbStatementForText = false);
-
-            if (settings.RedisEnabled)
-                builder.AddRedisInstrumentation(null, options =>
-                {
-                    options.Enrich = (activity, command) =>
-                    {
-                        // TODO: check possibilities
-                    };
-                });
+            if (settings.UseConsoleExporter)
+                builder.AddConsoleExporter();
 
             if (settings.Jaeger.Enabled)
                 builder.AddJaegerExporter(options =>
                 {
                     options.AgentHost = settings.Jaeger.Host;
                     options.AgentPort = settings.Jaeger.Port;
-                    options.ExportProcessorType = ExportProcessorType.Simple;
+                    options.MaxPayloadSizeInBytes = 4096;
+
+                    options.ExportProcessorType = ExportProcessorType.Batch;
+                    options.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>()
+                    {
+                        MaxQueueSize = 2048,
+                        ScheduledDelayMilliseconds = 5000,
+                        ExporterTimeoutMilliseconds = 30000,
+                        MaxExportBatchSize = 512,
+                    };
                 });
+        });
+    }
+
+    private static TracerProviderBuilder AddGrpcInstruments(
+        this TracerProviderBuilder builder,
+        TracingSettings settings)
+    {
+        if (!settings.GrpcEnabled)
+            return builder;
+
+        return builder.AddGrpcClientInstrumentation(options =>
+        {
+            
+        });
+    }
+
+    private static TracerProviderBuilder AddEfCoreInstruments(
+        this TracerProviderBuilder builder,
+        TracingSettings settings)
+    {
+        if (!settings.EfCoreEnabled)
+            return builder;
+
+        return builder.AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForText = false;
+        });
+    }
+
+    private static TracerProviderBuilder AddMassTransitInstruments(
+        this TracerProviderBuilder builder,
+        TracingSettings settings)
+    {
+        if (!settings.MassTransitEnabled)
+            return builder;
+
+        return builder.AddMassTransitInstrumentation();
+    }
+
+    private static TracerProviderBuilder AddRedisInstruments(
+        this TracerProviderBuilder builder,
+        TracingSettings settings)
+    {
+        if (!settings.RedisEnabled)
+            return builder;
+
+        return builder.AddRedisInstrumentation(null, options =>
+        {
+            options.EnrichActivityWithTimingEvents = true;
+            options.SetVerboseDatabaseStatements = true;
         });
     }
 }
