@@ -27,8 +27,7 @@ public class JaegerSettings
 public class FilterSettings
 {
     public bool Enabled { get; set; } = true;
-    public List<string> Tags { get; set; } = new() {"ignore"};
     public List<string> Paths { get; set; } = new();
     public List<string> Expressions { get; set; } = new();
-    public List<string> FilterExtensions { get; set; } = new() {"js", "css", "html", "jpg", "png", "svg"};
+    public List<string> FilterExtensions { get; set; } = new() {"js", "css", "html", "jpg", "png", "svg", "metrics", "healthz"};
 }

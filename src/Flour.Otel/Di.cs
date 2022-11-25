@@ -63,10 +63,7 @@ public static class Di
                         if (!context.Request.Path.HasValue ||
                             string.IsNullOrWhiteSpace(context.Request.Path.Value))
                             return false;
-
-                        if (Activity.Current?.Tags.Any(t => settings.Filters.Tags.Contains(t.Key)) ?? false)
-                            return true;
-
+                        
                         var result = true;
                         var requestPath = context.Request.Path.Value;
 
@@ -113,7 +110,7 @@ public static class Di
                     options.MaxPayloadSizeInBytes = 4096;
 
                     options.ExportProcessorType = ExportProcessorType.Batch;
-                    options.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>()
+                    options.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>
                     {
                         MaxQueueSize = 2048,
                         ScheduledDelayMilliseconds = 5000,
