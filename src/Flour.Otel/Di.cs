@@ -17,7 +17,7 @@ public static class Di
     public static IServiceCollection AddTracing(
         this IServiceCollection services,
         IConfiguration configuration,
-        Action<Activity, HttpRequest> enricher = null,
+        Action<Activity, HttpRequest> requestEnricher = null,
         string sectionName = DefaultSection)
     {
         var settings = new TracingSettings();
@@ -39,7 +39,7 @@ public static class Di
             ActivitySource.AddActivityListener(listener);
         }
 
-        return services.AddOpenTelemetryTracing(builder =>
+        return services.AddOpenTelemetry().WithTracing(builder =>
         {
             builder
                 .AddSource(settings.ServiceName)
@@ -48,7 +48,7 @@ public static class Di
                 {
                     options.EnableGrpcAspNetCoreSupport = true;
                     options.RecordException = true;
-                    options.EnrichWithHttpRequest = enricher;
+                    options.EnrichWithHttpRequest = requestEnricher;
 
                     if (!settings.Filters.Enabled)
                         return;
@@ -118,7 +118,7 @@ public static class Di
                         MaxExportBatchSize = 512,
                     };
                 });
-        });
+        }).Services;
     }
 
     private static TracerProviderBuilder AddGrpcInstruments(
@@ -130,7 +130,8 @@ public static class Di
 
         return builder.AddGrpcClientInstrumentation(options =>
         {
-            
+            options.EnrichWithHttpResponseMessage = (activity, response) =>
+                activity.AddTag("response_status", response.StatusCode);
         });
     }
 

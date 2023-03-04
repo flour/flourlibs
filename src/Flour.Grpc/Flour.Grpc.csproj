@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="protobuf-net.Grpc.ClientFactory" Version="1.0.179" />
+        <PackageReference Include="protobuf-net.Grpc.ClientFactory" Version="1.1.1" />
     </ItemGroup>
 
 </Project>

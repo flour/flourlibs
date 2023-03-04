@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Description>Flour.RabbitMQ</Description>
         <Authors>Vladislav Dikhnich</Authors>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>Latest</LangVersion>
         <AssemblyName>Flour.RabbitMQ</AssemblyName>
@@ -14,8 +14,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
         <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     </ItemGroup>
 
