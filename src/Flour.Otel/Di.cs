@@ -119,7 +119,6 @@ public static class Di
 
         return builder.AddGrpcClientInstrumentation(options =>
         {
-            options.SuppressDownstreamInstrumentation = true;
             options.EnrichWithHttpRequestMessage = (act, req) => { act.AddTag("service_name", settings.ServiceName); };
         });
     }
