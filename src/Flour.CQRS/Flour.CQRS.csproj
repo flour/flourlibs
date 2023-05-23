@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Description>Flour.CQRS</Description>
         <Authors>Vladislav Dikhnich</Authors>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>Latest</LangVersion>
         <AssemblyName>Flour.CQRS</AssemblyName>
@@ -14,8 +14,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-        <PackageReference Include="Scrutor" Version="4.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Scrutor" Version="4.2.1" />
     </ItemGroup>
 
 </Project>
