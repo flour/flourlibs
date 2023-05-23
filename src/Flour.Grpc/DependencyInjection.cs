@@ -22,11 +22,14 @@ public static class DependencyInjection
                 opts.Address = new Uri(serviceUrl);
                 opts.ChannelOptionsActions.Add(channelOpts =>
                 {
+                    channelOpts.MaxRetryAttempts = 2;
+                    channelOpts.MaxReceiveMessageSize = null;
+                    channelOpts.DisposeHttpClient = true;
                     channelOpts.HttpHandler = new SocketsHttpHandler
                     {
+                        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(5),
                         KeepAlivePingDelay = TimeSpan.FromSeconds(60),
                         KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-                        PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
                         EnableMultipleHttp2Connections = true
                     };
                 });

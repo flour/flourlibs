@@ -4,17 +4,17 @@ public class TracingSettings
 {
     public bool Enabled { get; set; } = true;
     public bool BaggageAsTags { get; set; } = true;
+    public bool GrpcEnabled { get; set; }
+    public bool MassTransitEnabled { get; set; }
+    public bool EfCoreEnabled { get; set; }
+    public bool RedisEnabled { get; set; }
+    public bool UseConsoleExporter { get; set; }
     public string ServiceName { get; set; } = "SomeService";
-    public List<KeyValuePair<string, string>> Enrichers { get; set; } = new();
-    public List<KeyValuePair<string, object>> Attributes { get; set; } = new();
+    public JaegerSettings Jaeger { get; set; } = new();
     public FilterSettings Filters { get; set; } = new();
 
-    public bool GrpcEnabled { get; set; } = false;
-    public bool MassTransitEnabled { get; set; } = false;
-    public bool EfCoreEnabled { get; set; } = false;
-    public bool RedisEnabled { get; set; } = false;
-    public bool UseConsoleExporter { get; set; } = false;
-    public JaegerSettings Jaeger { get; set; } = new();
+    public List<KeyValuePair<string, string>> Enrichers { get; set; } = new();
+    public List<KeyValuePair<string, object>> Attributes { get; set; } = new();
 }
 
 public class JaegerSettings
@@ -29,5 +29,7 @@ public class FilterSettings
     public bool Enabled { get; set; } = true;
     public List<string> Paths { get; set; } = new();
     public List<string> Expressions { get; set; } = new();
-    public List<string> FilterExtensions { get; set; } = new() {"js", "css", "html", "jpg", "png", "svg", "metrics", "healthz"};
+
+    public List<string> FilterExtensions { get; set; } =
+        new() { "js", "css", "html", "jpg", "png", "svg", "metrics", "healthz" };
 }
