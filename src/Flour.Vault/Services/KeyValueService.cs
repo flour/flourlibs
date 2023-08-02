@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using VaultSharp;
 
 namespace Flour.Vault.Services;
@@ -23,7 +23,7 @@ internal class KeyValueService : IKeyValueSecrets
 
     public async Task<T> GetAsync<T>(string path)
     {
-        return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(await GetAsync(path)));
+        return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(await GetAsync(path)));
     }
 
 

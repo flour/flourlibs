@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Text.Json;
 using Flour.Vault.Internals;
 using Flour.Vault.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Token;
@@ -69,7 +69,7 @@ public static class Extensions
         var keyValueService = new KeyValueService(client, options);
         var secret = await keyValueService.GetAsync(kvPath);
         var parser = new JsonConfigurationParser();
-        var data = parser.Parse(JObject.FromObject(secret));
+        var data = parser.Parse(JsonDocument.Parse(JsonSerializer.Serialize(secret)));
         var source = new MemoryConfigurationSource { InitialData = data };
         builder.Add(source);
     }

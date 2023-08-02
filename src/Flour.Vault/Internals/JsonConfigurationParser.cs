@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace Flour.Vault.Internals;
 
@@ -13,16 +13,16 @@ internal class JsonConfigurationParser
 
     private string _currentPath;
 
-    public IDictionary<string, string> Parse(JObject jObject)
+    public IDictionary<string, string> Parse(JsonDocument jObject)
     {
-        VisitJObject(jObject);
+        VisitJObject(jObject.RootElement);
 
         return _mappings;
     }
 
-    private void VisitJObject(JObject jObject)
+    private void VisitJObject(JsonElement jObject)
     {
-        foreach (var property in jObject.Properties())
+        foreach (var property in jObject.EnumerateObject())
         {
             EnterContext(property.Name);
             VisitProperty(property);
@@ -30,32 +30,27 @@ internal class JsonConfigurationParser
         }
     }
 
-    private void VisitProperty(JProperty property)
+    private void VisitProperty(JsonProperty property)
     {
         VisitToken(property.Value);
     }
 
-    private void VisitToken(JToken token)
+    private void VisitToken(JsonElement token)
     {
-        switch (token.Type)
+        switch (token.ValueKind)
         {
-            case JTokenType.Object:
-                VisitJObject(token.Value<JObject>());
+            case JsonValueKind.Object:
+                VisitJObject(token);
                 break;
-            case JTokenType.Array:
-                VisitArray(token.Value<JArray>());
+            case JsonValueKind.Array:
+                VisitArray(token);
                 break;
-            case JTokenType.Integer:
-            case JTokenType.Float:
-            case JTokenType.String:
-            case JTokenType.Boolean:
-            case JTokenType.Bytes:
-            case JTokenType.Raw:
-            case JTokenType.Null:
-            case JTokenType.Date:
-            case JTokenType.Guid:
-            case JTokenType.Uri:
-            case JTokenType.TimeSpan:
+            case JsonValueKind.Number:
+            case JsonValueKind.String:
+            case JsonValueKind.False:
+            case JsonValueKind.True:
+            case JsonValueKind.Null:
+            case JsonValueKind.Undefined:
                 VisitPrimitive(token);
                 break;
             default:
@@ -63,9 +58,9 @@ internal class JsonConfigurationParser
         }
     }
 
-    private void VisitArray(JArray array)
+    private void VisitArray(JsonElement array)
     {
-        for (var i = 0; i < array.Count; i++)
+        for (var i = 0; i < array.GetArrayLength(); i++)
         {
             EnterContext(i.ToString());
             VisitToken(array[i]);
@@ -73,7 +68,7 @@ internal class JsonConfigurationParser
         }
     }
 
-    private void VisitPrimitive(JToken data)
+    private void VisitPrimitive(JsonElement data)
     {
         var key = _currentPath;
 

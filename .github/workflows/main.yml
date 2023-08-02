@@ -1,0 +1,46 @@
+name: Build and publish
+
+on:
+  push:
+    tags:
+      - '**'
+  workflow_dispatch:
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    name: Build-${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: "Git Fetch Tags"
+        run: git fetch --tags
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+
+      - name: "Go to libs folder"
+        run: cd
+
+      - name: "Build"
+        run: dotnet build -c release
+
+      - name: "Pack nugets"
+        if: success()
+        run: dotnet pack -c release -o nuget
+
+      - name: "Publish nugets"
+        if: success()
+        run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

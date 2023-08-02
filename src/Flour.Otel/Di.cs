@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -51,7 +50,7 @@ public static class Di
                         options.EnableGrpcAspNetCoreSupport = true;
                         options.RecordException = true;
                         options.EnrichWithHttpRequest = enricher;
-                        options.EnrichWithHttpRequest += (activity, request) =>
+                        options.EnrichWithHttpRequest += (activity, _) =>
                         {
                             activity.AddTag("service_name", settings.ServiceName);
                         };
@@ -119,7 +118,10 @@ public static class Di
 
         return builder.AddGrpcClientInstrumentation(options =>
         {
-            options.EnrichWithHttpRequestMessage = (act, req) => { act.AddTag("service_name", settings.ServiceName); };
+            options.EnrichWithHttpRequestMessage = (act, _) =>
+            {
+                act.AddTag("service_name", settings.ServiceName);
+            };
         });
     }
 
@@ -149,8 +151,8 @@ public static class Di
     {
         if (!settings.RedisEnabled)
             return builder;
-
-        return builder.AddRedisInstrumentation(null, options =>
+        
+        return builder.AddRedisInstrumentation(options =>
         {
             options.EnrichActivityWithTimingEvents = true;
             options.SetVerboseDatabaseStatements = true;
