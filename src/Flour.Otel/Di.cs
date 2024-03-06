@@ -47,7 +47,6 @@ public static class Di
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation(options =>
                     {
-                        options.EnableGrpcAspNetCoreSupport = true;
                         options.RecordException = true;
                         options.EnrichWithHttpRequest = enricher;
                         options.EnrichWithHttpRequest += (activity, _) =>
