@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="protobuf-net.Grpc.ClientFactory" Version="1.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+        <PackageReference Include="protobuf-net.Grpc.ClientFactory" Version="1.2.2" />
     </ItemGroup>
 
 </Project>
