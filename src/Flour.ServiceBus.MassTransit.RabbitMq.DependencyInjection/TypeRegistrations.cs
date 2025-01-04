@@ -40,7 +40,7 @@ public static class TypeRegistrations
                     cfg.Host($"rabbitmq://{_settings.Username}:{_settings.Password}@{_settings.Host}{port}");
 
                     cfg.PrefetchCount = 20;
-                    cfg.UseInMemoryOutbox();
+                    cfg.UseInMemoryOutbox(context);
 
                     cfg.UseMessageRetry(r =>
                     {

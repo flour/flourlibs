@@ -7,12 +7,12 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace Flour.OTel;
+namespace Flour.Otel;
 
 public static class Di
 {
     private const string DefaultSection = "otel:tracing";
-    private static List<Regex> _expressionFilters = new();
+    private static List<Regex> _expressionFilters = [];
 
     public static IServiceCollection AddTracing(
         this IServiceCollection services,
@@ -71,7 +71,7 @@ public static class Di
                             var result = true;
                             var requestPath = context.Request.Path.Value;
 
-                            if (settings.Filters.FilterExtensions.Any())
+                            if (settings.Filters.FilterExtensions.Count != 0)
                             {
                                 var extension = requestPath.Split('.').LastOrDefault();
                                 if (!string.IsNullOrWhiteSpace(extension))
@@ -79,7 +79,7 @@ public static class Di
                                         .Any(f => extension.StartsWith(f));
                             }
 
-                            if (settings.Filters.Paths.Any())
+                            if (settings.Filters.Paths.Count != 0)
                             {
                                 var filteredByPath = !settings.Filters.Paths
                                     .Any(f => context.Request.Path.StartsWithSegments(f) || requestPath.StartsWith(f));
@@ -150,7 +150,7 @@ public static class Di
     {
         if (!settings.RedisEnabled)
             return builder;
-        
+
         return builder.AddRedisInstrumentation(options =>
         {
             options.EnrichActivityWithTimingEvents = true;

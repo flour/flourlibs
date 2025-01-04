@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Flour.Logging.Enrichers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Configuration;
@@ -38,9 +39,9 @@ public static class TypesRegistration
         Action<LoggerEnrichmentConfiguration> enrich = null)
     {
         var options = loggerOptions ??
-                      throw new ArgumentNullException(nameof(loggerOptions), @"Logger options cannot by null");
+                      throw new ArgumentNullException(nameof(loggerOptions), "Logger options cannot by null");
         var config = configuration ??
-                     throw new ArgumentNullException(nameof(configuration), @"Logger configuration cannot by null");
+                     throw new ArgumentNullException(nameof(configuration), "Logger configuration cannot by null");
 
         config.Enrich.WithExceptionDetails();
         config.Enrich.With<LogLevelEnricher>();
@@ -51,7 +52,6 @@ public static class TypesRegistration
         options.Console?.Configure(config);
         options.File?.Configure(config);
         options.ElasticSearch?.Configure(config);
-        options.Loki?.Configure(config);
         options.Seq?.Configure(config);
 
         if (options.Labels is null)

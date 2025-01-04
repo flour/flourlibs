@@ -2,7 +2,7 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Flour.Logging;
+namespace Flour.Logging.Enrichers;
 
 public class ActivityEnricher : ILogEventEnricher
 {

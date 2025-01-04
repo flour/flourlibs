@@ -16,7 +16,7 @@ public class Filter
 
 public class FilteringOptions : ILoggerOptions
 {
-    public List<Filter> Filters { get; set; } = new();
+    public List<Filter> Filters { get; set; } = [];
     public bool Enabled { get; set; }
 
     public void Configure(LoggerConfiguration configuration)

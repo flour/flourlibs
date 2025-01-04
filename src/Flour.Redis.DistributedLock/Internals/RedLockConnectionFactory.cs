@@ -1,5 +1,4 @@
-﻿using CS.SDK.Redis.DistributedLock.Internals;
-using Flour.Redis.Abstractions;
+﻿using Flour.Redis.Abstractions;
 using Microsoft.Extensions.Options;
 using RedLockNet;
 using RedLockNet.SERedis.Configuration;

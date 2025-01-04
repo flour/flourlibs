@@ -1,4 +1,4 @@
-﻿namespace Flour.OTel;
+﻿namespace Flour.Otel;
 
 public class TracingSettings
 {

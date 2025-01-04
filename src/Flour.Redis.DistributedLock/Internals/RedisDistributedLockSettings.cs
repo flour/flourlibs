@@ -1,4 +1,4 @@
-﻿namespace CS.SDK.Redis.DistributedLock.Internals;
+﻿namespace Flour.Redis.DistributedLock.Internals;
 
 public class RedisDistributedLockSettings
 {

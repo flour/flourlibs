@@ -1,5 +1,4 @@
-﻿using CS.SDK.Redis.DistributedLock.Internals;
-using Flour.Redis.DistributedLock.Contracts;
+﻿using Flour.Redis.DistributedLock.Contracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

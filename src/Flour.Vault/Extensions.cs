@@ -2,10 +2,10 @@
 using System.Text.Json;
 using Flour.Vault.Internals;
 using Flour.Vault.Services;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Token;
@@ -17,20 +17,29 @@ public static class Extensions
 {
     private const string DefaultSectionName = "vault";
 
-    public static IWebHostBuilder UseVault(
-        this IWebHostBuilder hosBuilder,
+    public static IHostApplicationBuilder UseVault(
+        this IHostApplicationBuilder hostBuilder,
         string keyValuePath = null,
         string sectionName = DefaultSectionName)
     {
-        return hosBuilder
-            .ConfigureServices(services => services.AddVault(sectionName))
-            .ConfigureAppConfiguration((_, builder) =>
-            {
-                var options = builder.Build().GetOptions<VaultOptions>(sectionName);
-                if (!options.Enabled)
-                    return;
-                builder.SetVaultConfig(options, keyValuePath).GetAwaiter().GetResult();
-            });
+        var settings = new VaultOptions();
+
+        hostBuilder.Configuration.GetSection(sectionName).Bind(settings);
+        if (!settings.Enabled)
+            return hostBuilder;
+
+        hostBuilder.Services.AddVault(sectionName);
+        hostBuilder.Configuration.AddVaultConfiguration(settings);
+
+        return hostBuilder;
+    }
+
+    private static IConfigurationManager AddVaultConfiguration(
+        this IConfigurationManager manager, VaultOptions options)
+    {
+        IConfigurationBuilder configBuilder = manager;
+        configBuilder.SetVaultConfig(options, null).GetAwaiter().GetResult();
+        return manager;
     }
 
     private static IServiceCollection AddVault(
@@ -56,9 +65,7 @@ public static class Extensions
 
 
     private static async Task SetVaultConfig(
-        this IConfigurationBuilder builder,
-        VaultOptions options,
-        string kvp)
+        this IConfigurationBuilder builder, VaultOptions options, string kvp)
     {
         VerifyOptions(options);
         var kvPath = string.IsNullOrWhiteSpace(kvp) ? options.KeyValue?.Path : kvp;
@@ -70,7 +77,7 @@ public static class Extensions
         var secret = await keyValueService.GetAsync(kvPath);
         var parser = new JsonConfigurationParser();
         var data = parser.Parse(JsonDocument.Parse(JsonSerializer.Serialize(secret)));
-        var source = new MemoryConfigurationSource { InitialData = data };
+        var source = new MemoryConfigurationSource {InitialData = data};
         builder.Add(source);
     }
 
@@ -106,7 +113,7 @@ public static class Extensions
             AuthType.Token => new TokenAuthMethodInfo(options.Token),
             AuthType.UserPass => new UserPassAuthMethodInfo(options.Username, options.Password),
             _ => throw new InvalidEnumArgumentException(
-                nameof(options.AuthType), (int)options.AuthType, typeof(AuthType))
+                nameof(options.AuthType), (int) options.AuthType, typeof(AuthType))
         };
 
         var settings = new VaultClientSettings(options.Url, authMethodInfo);

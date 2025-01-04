@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <Description>Flour.BrokersContracts</Description>
-        <Authors>Vladislav Dikhnich</Authors>
-        <TargetFramework>net8.0</TargetFramework>
+        <Authors>Vladislav Dukhnich</Authors>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>Latest</LangVersion>
         <AssemblyName>Flour.BrokersContracts</AssemblyName>

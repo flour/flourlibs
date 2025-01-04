@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace Flour.Logging;
+namespace Flour.Logging.Enrichers;
 
 public class LogLevelEnricher : ILogEventEnricher
 {
