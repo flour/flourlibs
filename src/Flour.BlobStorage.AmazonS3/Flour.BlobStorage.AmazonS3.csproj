@@ -4,7 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.411" />
+        <PackageReference Include="AWSSDK.S3" Version="4.0.15.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Flour.BlobStorage.Contracts\Flour.BlobStorage.Contracts.csproj" />

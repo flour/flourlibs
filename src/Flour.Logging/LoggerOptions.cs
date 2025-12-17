@@ -13,4 +13,5 @@ public class LoggerOptions
     public FileOptions File { get; set; }
     public ElasticOptions ElasticSearch { get; set; }
     public SeqOptions Seq { get; set; }
+    public OtelOptions Otel { get; set; }
 }

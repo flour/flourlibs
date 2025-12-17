@@ -33,21 +33,16 @@ This library exposes IBlobStorageReader, IBlobStorageWriter and IBlobStorageDele
 
 The Amazon S3 implementation uses the AWS SDK for .NET to interact with the Amazon S3 API and other similar APIs like MinIO.
 
-## Flour.RabbitMQ ![NuGet](https://img.shields.io/nuget/v/Flour.RabbitMQ.svg?style=flat)
-
-Wrapper around RabbitMQ to publish domain events
-
-## Flour.IOBox ![NuGet](https://img.shields.io/nuget/v/Flour.IOBox.svg?style=flat)
-
-Outbox pattern contracts and in-memory implementation 
-
-## Flour.Tracing.Jaeger ![NuGet](https://img.shields.io/nuget/v/Flour.Tracing.Jaeger.svg?style=flat)
-
-**WIP**
-
 ## Notes
 
 ### Flour.Logging
 
 To use Graylog with normal output (using UDP) create GELF + UDP input, but not just plain text + UDP
 https://github.com/Graylog2/graylog2-server/issues/1431
+#### Supported sinks
+
+- Console
+- Graylog
+- Elastic search
+- Seq
+- Open Telemetry

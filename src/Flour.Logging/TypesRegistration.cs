@@ -53,6 +53,7 @@ public static class TypesRegistration
         options.File?.Configure(config);
         options.ElasticSearch?.Configure(config);
         options.Seq?.Configure(config);
+        options.Otel?.Configure(config);
 
         if (options.Labels is null)
             return;
