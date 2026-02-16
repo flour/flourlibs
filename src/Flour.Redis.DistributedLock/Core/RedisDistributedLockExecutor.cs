@@ -3,18 +3,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Flour.Redis.DistributedLock.Core;
 
-internal class RedisDistributedLockExecutor : IDistributedLockExecutor
+internal class RedisDistributedLockExecutor(
+    IDistributedLockAcquirer lockAcquirer,
+    ILogger<RedisDistributedLockExecutor> logger)
+    : IDistributedLockExecutor
 {
-    private readonly IDistributedLockAcquirer _lockAcquirer;
-    private readonly ILogger<RedisDistributedLockExecutor> _logger;
-
-    public RedisDistributedLockExecutor(
-        IDistributedLockAcquirer lockAcquirer,
-        ILogger<RedisDistributedLockExecutor> logger)
-    {
-        _lockAcquirer = lockAcquirer ?? throw new ArgumentNullException(nameof(lockAcquirer));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly IDistributedLockAcquirer _lockAcquirer =
+        lockAcquirer ?? throw new ArgumentNullException(nameof(lockAcquirer));
 
     public async Task<T> Execute<T>(Func<Task<T>> codeToExecute, string lockKey)
     {
@@ -31,19 +26,18 @@ internal class RedisDistributedLockExecutor : IDistributedLockExecutor
             {
                 if (!distributedLock.IsAcquired)
                 {
-                    _logger.LogWarning(
+                    logger.LogWarning(
                         "Lock {Key} not acquired. {LockId}", distributedLock.Key, distributedLock.LockId);
                     throw new LockNotAcquiredException(
                         $"Lock {distributedLock.Key} not acquired. LockId={distributedLock.LockId}");
                 }
 
-                _logger.LogDebug("Lock {Key} acquired. {LockId}", distributedLock.Key, distributedLock.LockId);
-
+                logger.LogDebug("Lock {Key} acquired. {LockId}", distributedLock.Key, distributedLock.LockId);
                 return await codeToExecute().ConfigureAwait(false);
             }
             finally
             {
-                _logger.LogDebug("Releasing lock {Key}. {LockId}", distributedLock.Key, distributedLock.LockId);
+                logger.LogDebug("Releasing lock {Key}. {LockId}", distributedLock.Key, distributedLock.LockId);
             }
         }
     }

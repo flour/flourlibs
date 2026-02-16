@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Description>Flour.CQRS.Brokers.Brokers</Description>
         <Authors>Vladislav Dukhnich</Authors>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>Latest</LangVersion>
         <AssemblyName>Flour.CQRS.Brokers</AssemblyName>

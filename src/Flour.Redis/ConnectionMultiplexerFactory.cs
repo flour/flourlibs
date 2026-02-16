@@ -6,29 +6,23 @@ using StackExchange.Redis;
 
 namespace Flour.Redis;
 
-internal class ConnectionMultiplexerFactory : IConnectionMultiplexerFactory
+internal class ConnectionMultiplexerFactory(
+    IConnectionMultiplexerService connectionService,
+    IOptions<RedisSettings> settings,
+    ILogger<ConnectionMultiplexerFactory> logger)
+    : IConnectionMultiplexerFactory
 {
-    private readonly IConnectionMultiplexerService _connectionService;
-    private readonly ILogger<ConnectionMultiplexerFactory> _logger;
-    private readonly RedisSettings _settings;
+    private readonly IConnectionMultiplexerService _connectionService =
+        connectionService ?? throw new ArgumentNullException(nameof(connectionService));
 
-    public ConnectionMultiplexerFactory(
-        IConnectionMultiplexerService connectionService,
-        IOptions<RedisSettings> settings,
-        ILogger<ConnectionMultiplexerFactory> logger)
-    {
-        _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
-        _settings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
-        _logger = logger;
-    }
+    private readonly RedisSettings _settings = settings.Value;
 
     public Task<IConnectionMultiplexer> Create()
     {
         if (!string.IsNullOrWhiteSpace(_settings.Master))
             return _connectionService.GetConnection(
                 _settings.Master,
-                string.Join(',',
-                    _settings.HostAddresses.Select(e => $"{e.Host}{(e.Port > 0 ? $":{e.Port}" : "")}")));
+                string.Join(',', _settings.HostAddresses.Select(e => $"{e.Host}{(e.Port > 0 ? $":{e.Port}" : "")}")));
 
         var configuration = ConnectionSettingsFactory.GetRedisOptions(null, _settings);
 

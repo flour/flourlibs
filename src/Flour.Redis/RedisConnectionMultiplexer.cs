@@ -4,19 +4,13 @@ using StackExchange.Redis;
 
 namespace Flour.Redis;
 
-internal class RedisConnectionMultiplexer : IRedisConnectionMultiplexer
+internal class RedisConnectionMultiplexer(IConnectionMultiplexerFactory factory, IOptions<RedisSettings> settings)
+    : IRedisConnectionMultiplexer
 {
-    private readonly IConnectionMultiplexerFactory _factory;
-    private readonly RedisSettings _settings;
-    private int _disposeCounter;
+    private readonly RedisSettings _settings = settings.Value;
 
     private IConnectionMultiplexer _instance;
-
-    public RedisConnectionMultiplexer(IConnectionMultiplexerFactory factory, IOptions<RedisSettings> settings)
-    {
-        _factory = factory;
-        _settings = settings.Value;
-    }
+    private int _disposeCounter;
 
     public async Task<IDatabase> GetDatabase()
     {
@@ -34,7 +28,7 @@ internal class RedisConnectionMultiplexer : IRedisConnectionMultiplexer
 
     public async Task<IConnectionMultiplexer> GetMultiplexerInstance()
     {
-        return _instance ??= await _factory.Create().ConfigureAwait(false);
+        return _instance ??= await factory.Create().ConfigureAwait(false);
     }
 
     public void Dispose()

@@ -6,21 +6,14 @@ using Object = Google.Apis.Storage.v1.Data.Object;
 
 namespace Flour.BlobStorage.GoogleCs;
 
-internal class GcsBlobStorageWriter : IBlobStorageWriter<BucketKeyReference>
+internal class GcsBlobStorageWriter(
+    StorageClient client,
+    IOptions<GcsSettings> options,
+    ILogger<GcsBlobStorageWriter> logger)
+    : IBlobStorageWriter<BucketKeyReference>
 {
-    private readonly StorageClient _client;
-    private readonly ILogger<GcsBlobStorageWriter> _logger;
-    private readonly string _bucket;
-
-    public GcsBlobStorageWriter(
-        StorageClient client,
-        IOptions<GcsSettings> options,
-        ILogger<GcsBlobStorageWriter> logger)
-    {
-        _client = client;
-        _logger = logger;
-        _bucket = options.Value.BucketName ?? throw new ArgumentNullException(nameof(options.Value.BucketName));
-    }
+    private readonly string _bucket = options.Value.BucketName ??
+                                      throw new ArgumentNullException(nameof(options.Value.BucketName));
 
     public async Task Store(BucketKeyReference reference, Blob data)
     {
@@ -31,7 +24,7 @@ internal class GcsBlobStorageWriter : IBlobStorageWriter<BucketKeyReference>
             Metadata = data.Metadata,
             ContentType = data.ContentType,
         };
-        var uploader = _client.CreateObjectUploader(obj, data.Stream);
+        var uploader = client.CreateObjectUploader(obj, data.Stream);
         await uploader.UploadAsync();
     }
 }

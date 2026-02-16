@@ -4,18 +4,11 @@ using Microsoft.Extensions.Options;
 
 namespace Flour.BlobStorage.GoogleCs;
 
-internal class GcsClientFactory : IGcsClientFactory
+internal class GcsClientFactory(IOptions<GcsSettings> options) : IGcsClientFactory
 {
-    private readonly IOptions<GcsSettings> _options;
-
-    public GcsClientFactory(IOptions<GcsSettings> options)
-    {
-        _options = options;
-    }
-
     public StorageClient CreateClient()
     {
-        var credential = GoogleCredential.FromFile(_options.Value.CredentialsPath);
+        var credential = CredentialFactory.FromFile<GoogleCredential>(options.Value.CredentialsPath);
         return StorageClient.Create(credential);
     }
 }
