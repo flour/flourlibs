@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Flour.Commons;
 
-public static class Extensions
+public static class OptionsExtensions
 {
     public static TModel GetOptions<TModel>(this IConfiguration configuration, string sectionName)
         where TModel : new()

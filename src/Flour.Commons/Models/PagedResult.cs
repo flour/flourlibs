@@ -24,7 +24,7 @@ public class PagedResult<T> : IResult<IEnumerable<T>>
         return New(null, 201, data, true, count, page, total);
     }
 
-    public static PagedResult<T> Updated(IEnumerable<T> data = default, int count = 0, int page = 0, int total = 0)
+    public static PagedResult<T> Updated(IEnumerable<T> data = null, int count = 0, int page = 0, int total = 0)
     {
         return New(null, 204, data, true, count, page, total);
     }
@@ -68,7 +68,7 @@ public class PagedResult<T> : IResult<IEnumerable<T>>
     private static PagedResult<T> New(
         string message,
         int code = 500,
-        IEnumerable<T> data = default,
+        IEnumerable<T> data = null,
         bool success = false,
         int count = 0,
         int page = 0,

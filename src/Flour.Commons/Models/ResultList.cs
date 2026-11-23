@@ -21,7 +21,7 @@ public class ResultList<T> : IResult<IEnumerable<T>>
         return New(message, 201, data, true);
     }
 
-    public static ResultList<T> Updated(IEnumerable<T> data = default, string message = null)
+    public static ResultList<T> Updated(IEnumerable<T> data = null, string message = null)
     {
         return New(message, 204, data, true);
     }
@@ -64,7 +64,7 @@ public class ResultList<T> : IResult<IEnumerable<T>>
     private static ResultList<T> New(
         string message,
         int code = 500,
-        IEnumerable<T> data = default,
+        IEnumerable<T> data = null,
         bool success = false)
     {
         return new()

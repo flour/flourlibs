@@ -17,7 +17,7 @@ public class PageContext : IPageContext
     {
         PageIndex = pageIndex;
         PageSize = pageSize;
-        ListSort = listSort ?? Array.Empty<SortDescriptor>();
+        ListSort = listSort ?? [];
     }
 
     [DataMember(Order = 1)] public int PageIndex { get; set; }

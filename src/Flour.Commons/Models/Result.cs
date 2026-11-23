@@ -25,7 +25,7 @@ public class Result : IResult
         return New(message, 204, true);
     }
 
-    public static Result Bad(string message, int errorCode = default)
+    public static Result Bad(string message, int errorCode = 0)
     {
         return New(message, 400);
     }
@@ -69,7 +69,7 @@ public class Result : IResult
         string message,
         int code = 500,
         bool success = false,
-        int errorCode = default)
+        int errorCode = 0)
     {
         return new()
         {

@@ -3,23 +3,17 @@ using MassTransit;
 
 namespace Flour.ServiceBus.MassTransit.RabbitMq;
 
-internal class MassTransitServiceBus : IServiceBus
+internal class MassTransitServiceBus(
+    IBusControl internalBus,
+    IMassTransitRequestClientFactory requestClientFactory)
+    : IServiceBus
 {
-    private readonly IBusControl _internalBus;
-    private readonly IMassTransitRequestClientFactory _requestClientFactory;
+    private readonly IBusControl _internalBus = internalBus
+                                                ?? throw new ArgumentNullException(nameof(internalBus));
+    private readonly IMassTransitRequestClientFactory _requestClientFactory = requestClientFactory
+                                                                              ?? throw new ArgumentNullException(nameof(requestClientFactory));
 
     private int _disposeCount;
-
-    public MassTransitServiceBus(
-        IBusControl internalBus,
-        IMassTransitRequestClientFactory requestClientFactory)
-    {
-        _internalBus = internalBus
-                       ?? throw new ArgumentNullException(nameof(internalBus));
-
-        _requestClientFactory = requestClientFactory
-                                ?? throw new ArgumentNullException(nameof(requestClientFactory));
-    }
 
     public async Task StartAsync(CancellationToken token = default)
     {

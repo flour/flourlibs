@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="StackExchange.Redis" Version="2.11.0" />
+        <PackageReference Include="StackExchange.Redis" Version="3.4.35" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Flour.Commons\Flour.Commons.csproj"/>

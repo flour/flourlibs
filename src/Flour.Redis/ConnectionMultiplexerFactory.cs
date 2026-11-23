@@ -1,6 +1,5 @@
 ﻿using System.Net.Sockets;
 using Flour.Redis.Abstractions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
@@ -8,8 +7,7 @@ namespace Flour.Redis;
 
 internal class ConnectionMultiplexerFactory(
     IConnectionMultiplexerService connectionService,
-    IOptions<RedisSettings> settings,
-    ILogger<ConnectionMultiplexerFactory> logger)
+    IOptions<RedisSettings> settings)
     : IConnectionMultiplexerFactory
 {
     private readonly IConnectionMultiplexerService _connectionService =

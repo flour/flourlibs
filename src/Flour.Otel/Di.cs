@@ -76,7 +76,7 @@ public static class Di
                                 var extension = requestPath.Split('.').LastOrDefault();
                                 if (!string.IsNullOrWhiteSpace(extension))
                                     result = !settings.Filters.FilterExtensions
-                                        .Any(f => extension.StartsWith(f));
+                                        .Any(extension.StartsWith);
                             }
 
                             if (settings.Filters.Paths.Count != 0)
